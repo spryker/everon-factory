@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Everon\Component\Utils\Tests\Unit\Doubles\Dependency;
+namespace Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
 
-use Everon\Component\Utils\Tests\Unit\Doubles\FooStub;
+use Everon\Component\Factory\Tests\Unit\Doubles\FooStub;
 
 trait Foo
 {

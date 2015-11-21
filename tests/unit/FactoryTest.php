@@ -7,10 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Everon\Component\Utils\Tests\Unit;
+namespace Everon\Component\Factory\Tests\Unit;
 
 use Everon\Component\Factory\Dependency\Container;
-use Everon\Component\Utils\Tests\Unit\Doubles\FactoryStub;
+use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,13 +26,20 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->Factory = new FactoryStub($Dependency);
     }
 
+    public function test_build()
+    {
+        $Fuzz = $this->Factory->buildFuzz();
+
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub', $Fuzz);
+    }
+
     public function test_dependency_injection()
     {
-        $Foo = $this->Factory->buildFoo();
+        $Foo = $this->Factory->buildFuzz();
 
-        sd($Foo);
+        $Foo = $Foo->getFoo();
 
-        $this->assertInstanceOf('Everon\Component\Utils\Tests\Unit\Doubles\Foo', $Foo);
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FooStub', $Foo);
     }
 
 }
