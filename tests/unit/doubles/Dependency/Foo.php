@@ -1,0 +1,37 @@
+<?php
+/**
+ * This file is part of the Everon framework.
+ *
+ * (c) Oliwier Ptak <oliwierptak@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace Everon\Component\Utils\Tests\Unit\Doubles\Dependency;
+
+use Everon\Component\Utils\Tests\Unit\Doubles\FooStub;
+
+trait Foo
+{
+    /**
+     * @var FooStub
+     */
+    protected $Foo;
+
+    /**
+     * @return FooStub
+     */
+    public function getFoo()
+    {
+        return $this->Foo;
+    }
+
+    /**
+     * @param FooStub $Foo
+     */
+    public function setFoo(FooStub $Foo)
+    {
+        $this->Foo = $Foo;
+    }
+
+}
