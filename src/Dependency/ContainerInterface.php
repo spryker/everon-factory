@@ -56,15 +56,27 @@ interface ContainerInterface
      *
      * @return bool
      */
+    public function isInjected($name);
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
     public function isRegistered($name);
 
     /**
      * @return array
      */
-    public function getServices();
+    public function getDefinitions();
 
     /**
      * @return array
      */
-    public function getDefinitions();
+    public function getDependencies();
+
+    /**
+     * @return array
+     */
+    public function getServices();
 }

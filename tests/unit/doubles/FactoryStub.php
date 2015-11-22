@@ -23,7 +23,7 @@ class FactoryStub extends Factory
      * @throws UndefinedClassException
      * @return FuzzStub
      */
-    public function buildFuzz($namespace='Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildFuzz($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
         $className = $this->getFullClassName($namespace, 'FuzzStub');
         $this->classExists($className);
@@ -41,7 +41,7 @@ class FactoryStub extends Factory
      * @throws MissingFactoryDependencyInterfaceException
      * @return FooStub
      */
-    public function buildFoo($namespace='Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildFoo($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
         $className = $this->getFullClassName($namespace, 'FooStub');
         $this->classExists($className);
@@ -59,7 +59,7 @@ class FactoryStub extends Factory
      * @throws MissingFactoryDependencyInterfaceException
      * @return BarStub
      */
-    public function buildBar($namespace='Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildBar($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
         $className = $this->getFullClassName($namespace, 'BarStub');
         $this->classExists($className);

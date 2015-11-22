@@ -71,7 +71,7 @@ class Factory implements FactoryInterface
             return $class_name; //absolute name
         }
 
-        return $namespace.'\\'.$class_name;
+        return $namespace . '\\' . $class_name;
     }
 
     /**
@@ -87,7 +87,7 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    public function buildDateTime($time='now', \DateTimeZone $timezone=null)
+    public function buildDateTime($time = 'now', \DateTimeZone $timezone = null)
     {
         return new \DateTime($time, $timezone);
     }

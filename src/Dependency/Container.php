@@ -12,7 +12,6 @@ namespace Everon\Component\Factory\Dependency;
 use Everon\Component\Factory\Exception\DependencyCannotInjectItselfIntoItselfException;
 use Everon\Component\Factory\Exception\InstanceIsNotObjectException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
-use Everon\Component\Factory\Exception\UndefinedClassException;
 use Everon\Component\Factory\Exception\UndefinedDependencySetterException;
 use Everon\Component\Utils\Text\EndsWith;
 use Everon\Component\Utils\Text\LastTokenToName;
@@ -33,6 +32,11 @@ class Container implements ContainerInterface
      * @var array
      */
     protected $services = [];
+
+    /**
+     * @var array
+     */
+    protected $dependencies = [];
 
     /**
      * @var array
@@ -92,6 +96,9 @@ class Container implements ContainerInterface
         }
 
         $receiverClassName = get_class($ReceiverInstance);
+        if ($this->isInjected($receiverClassName)) {
+            return;
+        }
 
         $dependencies = $this->getClassDependencies($receiverClassName);
         foreach ($dependencies as $dependencyName) {
@@ -108,6 +115,8 @@ class Container implements ContainerInterface
 
             $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
         }
+
+        $this->dependencies[$receiverClassName] = $dependencies;
     }
 
     /**
@@ -162,6 +171,14 @@ class Container implements ContainerInterface
     /**
      * @inheritdoc
      */
+    public function isInjected($name)
+    {
+        return isset($this->dependencies[$name]);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function isRegistered($name)
     {
         return (isset($this->definitions[$name]) || isset($this->services[$name]));
@@ -170,17 +187,25 @@ class Container implements ContainerInterface
     /**
      * @inheritdoc
      */
-    public function getServices()
+    public function getDefinitions()
     {
-        return $this->services;
+        return $this->definitions;
     }
 
     /**
      * @inheritdoc
      */
-    public function getDefinitions()
+    public function getDependencies()
     {
-        return $this->definitions;
+        return $this->dependencies;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getServices()
+    {
+        return $this->services;
     }
 
 }

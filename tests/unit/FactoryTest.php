@@ -32,11 +32,11 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->Factory = new FactoryStub($this->Container);
         $Factory = $this->Factory;
 
-        $this->Container->register('Foo', function() use ($Factory) {
+        $this->Container->register('Foo', function () use ($Factory) {
             return $Factory->buildFoo();
         });
 
-        $this->Container->register('Bar', function() use ($Factory) {
+        $this->Container->register('Bar', function () use ($Factory) {
             return $Factory->buildBar();
         });
     }

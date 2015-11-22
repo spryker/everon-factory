@@ -51,4 +51,13 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $Fuzz->getFoo()->getBar());
     }
 
+    public function test_setter_dependency_should_only_be_injected_once()
+    {
+        $Fuzz = new FuzzStub();
+        $this->Container->inject($Fuzz);
+        $this->Container->inject($Fuzz);
+
+        $this->assertTrue($this->Container->isInjected(get_class($Fuzz)));
+    }
+
 }
