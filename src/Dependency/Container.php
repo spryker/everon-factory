@@ -9,7 +9,7 @@
  */
 namespace Everon\Component\Factory\Dependency;
 
-use Everon\Component\Factory\Exception\DependencyCannotInjectItselfIntoItselfException;
+use Everon\Component\Factory\Exception\DependencyCannotInjectItselfException;
 use Everon\Component\Factory\Exception\InstanceIsNotObjectException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 use Everon\Component\Factory\Exception\UndefinedDependencySetterException;
@@ -78,7 +78,7 @@ class Container implements ContainerInterface
 
         foreach ($parents as $parent) {
             $traits = array_merge(
-                class_uses($parent, $autoload), 
+                class_uses($parent, $autoload),
                 $traits
             );
         }
@@ -110,7 +110,7 @@ class Container implements ContainerInterface
             $requiredDependency = $this->textLastTokenToName($dependencyName);
 
             if (strcasecmp($requiredDependency, $this->textLastTokenToName($receiverClassName)) === 0) {
-                throw new DependencyCannotInjectItselfIntoItselfException($receiverClassName);
+                throw new DependencyCannotInjectItselfException($receiverClassName);
             }
 
             $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
@@ -144,7 +144,7 @@ class Container implements ContainerInterface
         if ($this->isRegistered($name)) {
             return;
         }
-        
+
         $this->register($name, $ServiceClosure);
     }
 
@@ -160,11 +160,11 @@ class Container implements ContainerInterface
         if (isset($this->services[$name])) {
             return $this->services[$name];
         }
-        
+
         if (is_callable($this->definitions[$name])) {
             $this->services[$name] = $this->definitions[$name]();
         }
-        
+
         return $this->services[$name];
     }
 

@@ -11,7 +11,7 @@ namespace Everon\Component\Factory\Exception;
 
 use Everon\Component\Utils\Exception\AbstractException;
 
-class DependencyCannotInjectItselfIntoItselfException extends AbstractException
+class DependencyCannotInjectItselfException extends AbstractException
 {
     protected $message = 'Dependency "%s" cannot inject itself into itself';
 }

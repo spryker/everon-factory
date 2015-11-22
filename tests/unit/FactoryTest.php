@@ -9,17 +9,14 @@
  */
 namespace Everon\Component\Factory\Tests\Unit;
 
-use Everon\Component\Factory\Dependency\Container;
 use Everon\Component\Factory\Dependency\ContainerInterface;
+use Everon\Component\Factory\Factory;
+use Mockery;
+use Mockery\MockInterface;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $Container;
-
     /**
      * @var FactoryStub
      */
@@ -28,25 +25,49 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->Container = new Container();
-        $this->Factory = new FactoryStub($this->Container);
-        $Factory = $this->Factory;
+        $Container = Mockery::mock('Everon\Component\Factory\Dependency\ContainerInterface');
 
-        $this->Container->register('Foo', function () use ($Factory) {
-            return $Factory->buildFoo();
-        });
-
-        $this->Container->register('Bar', function () use ($Factory) {
-            return $Factory->buildBar();
-        });
+        /** @var ContainerInterface $Container */
+        $this->Factory = new Factory($Container);
     }
 
-    public function test_build()
+    public function tearDown()
     {
-        $Fuzz = $this->Factory->buildFuzz();
+        Mockery::close();
+    }
 
-        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FooStub', $Fuzz->getFoo());
-        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $Fuzz->getFoo()->getBar());
+    public function test_inject_dependencies_and_require_factory()
+    {
+        $Fuzz = Mockery::mock(
+            'Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub, Everon\Component\Factory\Dependency\FactoryDependencyInterface'
+        );
+
+        $Fuzz->shouldReceive('setFactory')->times(1)->with($this->Factory);
+
+        /** @var MockInterface $Container */
+        $Container = $this->Factory->getDependencyContainer();
+        $Container->shouldReceive('inject')->times(1)->with($Fuzz);
+        $Container->shouldReceive('isFactoryRequired')
+            ->times(1)
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub')
+            ->andReturn(true);
+
+        $this->Factory->injectDependencies('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub', $Fuzz);
+    }
+
+    public function test_inject_dependencies_without_factory()
+    {
+        $Fuzz = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub');
+
+        /** @var MockInterface $Container */
+        $Container = $this->Factory->getDependencyContainer();
+        $Container->shouldReceive('inject')->times(1)->with($Fuzz);
+        $Container->shouldReceive('isFactoryRequired')
+            ->times(1)
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub')
+            ->andReturn(false);
+
+        $this->Factory->injectDependencies('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub', $Fuzz);
     }
 
 }
