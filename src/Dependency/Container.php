@@ -9,12 +9,21 @@
  */
 namespace Everon\Component\Factory\Dependency;
 
+use Everon\Component\Factory\Exception\DependencyCannotInjectItselfIntoItselfException;
+use Everon\Component\Factory\Exception\InstanceIsNotObjectException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 use Everon\Component\Factory\Exception\UndefinedDependencySetterException;
+use Everon\Component\Utils\Text\EndsWith;
+use Everon\Component\Utils\Text\LastTokenToName;
 
 class Container implements ContainerInterface
 {
+    use EndsWith;
+    use LastTokenToName;
+
+    const DEPENDENCY_INJECTION_FACTORY = 'Dependency\Injection\Factory';
+
     /**
      * @var array
      */
@@ -32,36 +41,36 @@ class Container implements ContainerInterface
 
 
     /**
-     * @param $dependency_name
      * @param $setter_name
-     * @param $Receiver
+     * @param $Instance
      *
      * @throws UndefinedContainerDependencyException
      * @throws UndefinedDependencySetterException
-     * @return void
+     * @internal param $dependency_name
      */
-    protected function injectSetterDependency($dependency_name, $setter_name, $Receiver)
+    protected function injectSetterDependency($setter_name, $Instance)
     {
         $method = 'set'.$setter_name; //eg. setConfigManager
-        if (method_exists($Receiver, $method) === false) {
+        if (method_exists($Instance, $method) === false) {
             throw new UndefinedDependencySetterException([
-                $dependency_name,
+                get_class($Instance),
                 $setter_name
             ]);
         }
 
-        $Receiver->$method($this->resolve($setter_name));
+        s('setting', $method, get_class($Instance), $this->resolve($setter_name));
+        $Instance->$method($this->resolve($setter_name));
     }
 
     /**
-     * @param $class
+     * @param $class_name
      * @param bool $autoload
      * @return array
      */
-    protected function getClassDependencies($class, $autoload = true)
+    protected function getClassDependencies($class_name, $autoload = true)
     {
-        $traits = class_uses($class, $autoload);
-        $parents = class_parents($class, $autoload);
+        $traits = class_uses($class_name, $autoload);
+        $parents = class_parents($class_name, $autoload);
 
         foreach ($parents as $parent) {
             $traits = array_merge(
@@ -76,12 +85,29 @@ class Container implements ContainerInterface
     /**
      * @inheritdoc
      */
-    public function inject($class_name, $Receiver)
+    public function inject($ReceiverInstance)
     {
-        if (class_exists($class_name, true) === false) {
-            throw new UndefinedClassException($class_name);
+        if (is_object($ReceiverInstance) === false) {
+            throw new InstanceIsNotObjectException();
         }
 
+        $receiverClassName = get_class($ReceiverInstance);
+
+        $dependencies = $this->getClassDependencies($receiverClassName);
+        foreach ($dependencies as $dependencyName) {
+            if ($this->textEndsWith($dependencyName, static::DEPENDENCY_INJECTION_FACTORY)) {
+                $this->requiresFactory[$receiverClassName] = true;
+                continue;
+            }
+
+            $requiredDependency = $this->textLastTokenToName($dependencyName);
+
+            if (strcasecmp($requiredDependency, $this->textLastTokenToName($receiverClassName)) === 0) {
+                throw new DependencyCannotInjectItselfIntoItselfException($receiverClassName);
+            }
+
+            $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
+        }
     }
 
     /**

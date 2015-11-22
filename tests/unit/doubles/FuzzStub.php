@@ -9,7 +9,6 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
-
 class FuzzStub
 {
     use Dependency\Injection\Foo;

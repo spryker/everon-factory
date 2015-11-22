@@ -10,6 +10,7 @@
 namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
 
+use Everon\Component\Factory\Exception\MissingFactoryDependencyInterfaceException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 use Everon\Component\Factory\Factory;
 
@@ -18,6 +19,7 @@ class FactoryStub extends Factory
     /**
      * @param string $namespace
      *
+     * @throws MissingFactoryDependencyInterfaceException
      * @throws UndefinedClassException
      * @return FuzzStub
      */
@@ -26,8 +28,45 @@ class FactoryStub extends Factory
         $className = $this->getFullClassName($namespace, 'FuzzStub');
         $this->classExists($className);
 
-        $class = new $className;
+        $Fuzz = new $className;
+        $this->injectDependencies($className, $Fuzz);
 
-        return new $class;
+        return new $Fuzz;
+    }
+
+    /**
+     * @param string $namespace
+     *
+     * @throws UndefinedClassException
+     * @throws MissingFactoryDependencyInterfaceException
+     * @return FooStub
+     */
+    public function buildFoo($namespace='Everon\Component\Factory\Tests\Unit\Doubles')
+    {
+        $className = $this->getFullClassName($namespace, 'FooStub');
+        $this->classExists($className);
+
+        $Foo = new $className;
+        $this->injectDependencies($className, $Foo);
+
+        return new $Foo;
+    }
+
+    /**
+     * @param string $namespace
+     *
+     * @throws UndefinedClassException
+     * @throws MissingFactoryDependencyInterfaceException
+     * @return BarStub
+     */
+    public function buildBar($namespace='Everon\Component\Factory\Tests\Unit\Doubles')
+    {
+        $className = $this->getFullClassName($namespace, 'BarStub');
+        $this->classExists($className);
+
+        $Bar = new $className;
+        $this->injectDependencies($className, $Bar);
+
+        return new $Bar;
     }
 }

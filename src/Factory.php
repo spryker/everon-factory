@@ -11,6 +11,7 @@ namespace Everon\Component\Factory;
 
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Dependency\FactoryDependencyInterface;
+use Everon\Component\Factory\Exception\MissingFactoryDependencyInterfaceException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 
 class Factory implements FactoryInterface
@@ -33,11 +34,15 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    public function injectDependencies($class_name, FactoryDependencyInterface $Receiver)
+    public function injectDependencies($class_name, $Instance)
     {
-        $this->getDependencyContainer()->inject($class_name, $Receiver);
+        $this->getDependencyContainer()->inject($Instance);
         if ($this->getDependencyContainer()->isFactoryRequired($class_name)) {
-            $Receiver->setFactory($this);
+            if (($Instance instanceof FactoryDependencyInterface) === false) {
+                throw new MissingFactoryDependencyInterfaceException($class_name);
+            }
+            /** @var FactoryDependencyInterface $Instance */
+            $Instance->setFactory($this);
         }
     }
 

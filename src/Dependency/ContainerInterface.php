@@ -9,18 +9,16 @@
  */
 namespace Everon\Component\Factory\Dependency;
 
-use Everon\Component\Factory\Exception\UndefinedClassException;
+use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 
 interface ContainerInterface
 {
     /**
-     * @param $class_name
-     * @param $Receiver
+     * @param $ReceiverInstance
      *
-     * @throws UndefinedClassException
-     * @return void
+     * @return
      */
-    public function inject($class_name, $Receiver);
+    public function inject($ReceiverInstance);
 
     /**
      * @param $class_name
@@ -28,4 +26,45 @@ interface ContainerInterface
      * @return bool
      */
     public function isFactoryRequired($class_name);
+
+    /**
+     * @param $name
+     * @param \Closure $ServiceClosure
+     *
+     * @return void
+     */
+    public function register($name, \Closure $ServiceClosure);
+
+    /**
+     * @param $name
+     * @param \Closure $ServiceClosure
+     *
+     * @return void
+     */
+    public function propose($name, \Closure $ServiceClosure);
+
+    /**
+     * @param $name
+     *
+     * @throws UndefinedContainerDependencyException
+     * @return mixed
+     */
+    public function resolve($name);
+
+    /**
+     * @param $name
+     *
+     * @return bool
+     */
+    public function isRegistered($name);
+
+    /**
+     * @return array
+     */
+    public function getServices();
+
+    /**
+     * @return array
+     */
+    public function getDefinitions();
 }

@@ -11,7 +11,6 @@ namespace Everon\Component\Factory;
 
 
 use Everon\Component\Factory\Dependency\ContainerInterface;
-use Everon\Component\Factory\Dependency\FactoryDependencyInterface;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 
 interface FactoryInterface
@@ -19,11 +18,10 @@ interface FactoryInterface
 
     /**
      * @param $class_name
-     * @param FactoryDependencyInterface $Receiver
-     *
-     * @return void
+     * @param $Instance
+     * @return
      */
-    public function injectDependencies($class_name, FactoryDependencyInterface $Receiver);
+    public function injectDependencies($class_name, $Instance);
 
     /**
      * @return ContainerInterface
