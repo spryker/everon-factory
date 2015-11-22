@@ -12,8 +12,9 @@ namespace Everon\Component\Factory\Tests\Unit;
 use Everon\Component\Factory\Dependency\Container;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
+use Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub;
 
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class DependencyContainerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ContainerInterface
@@ -41,9 +42,10 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         });
     }
 
-    public function test_build()
+    public function test_setter_dependency_injection()
     {
-        $Fuzz = $this->Factory->buildFuzz();
+        $Fuzz = new FuzzStub();
+        $this->Container->inject($Fuzz);
 
         $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FooStub', $Fuzz->getFoo());
         $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $Fuzz->getFoo()->getBar());

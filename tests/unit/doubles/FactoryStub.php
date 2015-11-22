@@ -31,7 +31,7 @@ class FactoryStub extends Factory
         $Fuzz = new $className;
         $this->injectDependencies($className, $Fuzz);
 
-        return new $Fuzz;
+        return $Fuzz;
     }
 
     /**
@@ -49,7 +49,7 @@ class FactoryStub extends Factory
         $Foo = new $className;
         $this->injectDependencies($className, $Foo);
 
-        return new $Foo;
+        return $Foo;
     }
 
     /**
@@ -67,6 +67,6 @@ class FactoryStub extends Factory
         $Bar = new $className;
         $this->injectDependencies($className, $Bar);
 
-        return new $Bar;
+        return $Bar;
     }
 }

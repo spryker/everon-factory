@@ -58,8 +58,8 @@ class Container implements ContainerInterface
             ]);
         }
 
-        s('setting', $method, get_class($Instance), $this->resolve($setter_name));
-        $Instance->$method($this->resolve($setter_name));
+        $Dependency = $this->resolve($setter_name);
+        $Instance->$method($Dependency);
     }
 
     /**
