@@ -9,8 +9,10 @@
  */
 namespace Everon\Component\Factory\Tests\Unit;
 
+use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Factory;
+use Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub;
 use Mockery;
 use Mockery\MockInterface;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
@@ -70,4 +72,44 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->Factory->injectDependencies('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub', $Fuzz);
     }
 
+    public function test_build_with_empty_constructor()
+    {
+        /** @var MockInterface $Container */
+        $Container = $this->Factory->getDependencyContainer();
+        $Container->shouldReceive('inject')->times(1);
+        $Container->shouldReceive('isFactoryRequired')
+            ->times(1)
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub')
+            ->andReturn(false);
+
+        $FuzzStub = $this->Factory->buildWithEmptyConstructor('FuzzStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub', $FuzzStub);
+    }
+
+    public function test_build_with_constructor_parameters()
+    {
+        $GizzStub = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub');
+
+        $CollectionParameters = Mockery::mock('Everon\Component\Collection\CollectionInterface');
+        $CollectionParameters->shouldReceive('toArray')->times(1)->andReturn([
+            $GizzStub,
+            'argument', [
+                'some' => 'data'
+            ]
+        ]);
+
+        /** @var MockInterface $Container */
+        $Container = $this->Factory->getDependencyContainer();
+        $Container->shouldReceive('inject')->times(1);
+        $Container->shouldReceive('isFactoryRequired')
+            ->times(1)
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\BarStub')
+            ->andReturn(false);
+
+        /** @var CollectionInterface $CollectionParameters */
+        $BarStub = $this->Factory->buildWithConstructorParameters('BarStub', 'Everon\Component\Factory\Tests\Unit\Doubles', $CollectionParameters);
+
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $BarStub);
+    }
 }

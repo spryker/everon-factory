@@ -52,10 +52,12 @@ class Factory implements FactoryInterface
      */
     public function buildWithEmptyConstructor($class_name, $namespace)
     {
+
         $class_name = $this->getFullClassName($namespace, $class_name);
         $this->classExists($class_name);
 
         $Instance = new $class_name();
+
         $this->injectDependencies($class_name, $Instance);
 
         return $Instance;

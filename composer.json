@@ -17,8 +17,9 @@
   },  
   "require": {
     "php": ">=5.6",
+    "everon/collection": "dev-development",
     "everon/utils": "dev-development"
-  },  
+  },
   "require-dev": {
     "phpunit/phpunit": "*",
     "mockery/mockery": "dev-master"
