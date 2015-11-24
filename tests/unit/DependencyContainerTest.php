@@ -38,7 +38,14 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->Container->register('Bar', function() use ($Factory) {
-            return $Factory->buildBar();
+            $Gizz = $Factory->buildGizz();
+            return $Factory->buildBar($Gizz, 'argument', [
+                'some' => 'data'
+            ]);
+        });
+
+        $this->Container->register('Gizz', function() use ($Factory) {
+            return $Factory->buildGizz();
         });
     }
 

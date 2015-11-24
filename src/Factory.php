@@ -9,6 +9,7 @@
  */
 namespace Everon\Component\Factory;
 
+use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Dependency\FactoryDependencyInterface;
 use Everon\Component\Factory\Exception\MissingFactoryDependencyInterfaceException;
@@ -47,19 +48,33 @@ class Factory implements FactoryInterface
     }
 
     /**
-     * @param $class_name
-     * @param $namespace
-     *
-     * @throws MissingFactoryDependencyInterfaceException
-     * @throws UndefinedClassException
-     * @return mixed
+     * @inheritdoc
      */
     public function buildWithEmptyConstructor($class_name, $namespace)
     {
         $class_name = $this->getFullClassName($namespace, $class_name);
         $this->classExists($class_name);
 
-        $Instance = new $class_name;
+        $Instance = new $class_name();
+        $this->injectDependencies($class_name, $Instance);
+
+        return $Instance;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildWithConstructorParameters($class_name, $namespace, CollectionInterface $parameterCollection)
+    {
+        $class_name = $this->getFullClassName($namespace, $class_name);
+        $this->classExists($class_name);
+
+        $ReflectionClass = new \ReflectionClass($class_name);
+
+        $Instance = $ReflectionClass->newInstanceArgs(
+            array_values($parameterCollection->toArray())
+        );
+
         $this->injectDependencies($class_name, $Instance);
 
         return $Instance;

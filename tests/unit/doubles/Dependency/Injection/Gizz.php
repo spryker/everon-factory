@@ -7,9 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Everon\Component\Factory\Dependency\Injection;
+namespace Everon\Component\Factory\Tests\Unit\Doubles\Dependency\Injection;
 
-trait Factory
+use Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
+
+trait Gizz
 {
-    use \Everon\Component\Factory\Dependency\Factory;
+    use Dependency\Gizz;
 }

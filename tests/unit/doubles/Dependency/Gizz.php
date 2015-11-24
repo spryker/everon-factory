@@ -9,29 +9,29 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
 
-use Everon\Component\Factory\Tests\Unit\Doubles\FooStub;
+use Everon\Component\Factory\Tests\Unit\Doubles\GizzStub;
 
-trait Foo
+trait Gizz
 {
     /**
-     * @var FooStub
+     * @var GizzStub
      */
-    protected $Foo;
+    protected $Gizz;
 
     /**
-     * @return FooStub
+     * @return GizzStub
      */
-    public function getFoo()
+    public function getGizz()
     {
-        return $this->Foo;
+        return $this->Gizz;
     }
 
     /**
-     * @param FooStub $Foo
+     * @param GizzStub $Gizz
      */
-    public function setFoo(FooStub $Foo)
+    public function setGizz(GizzStub $Gizz)
     {
-        $this->Foo = $Foo;
+        $this->Gizz = $Gizz;
     }
 
 }

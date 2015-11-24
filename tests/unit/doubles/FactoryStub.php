@@ -9,6 +9,7 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
+use Everon\Component\Collection\Collection;
 use Everon\Component\Factory\Factory;
 
 class FactoryStub extends Factory
@@ -38,8 +39,17 @@ class FactoryStub extends Factory
      *
      * @return BarStub
      */
-    public function buildBar($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildBar(GizzStub $GizzStub, $anotherArgument, array $data, $namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
-        return $this->buildWithEmptyConstructor('BarStub', $namespace);
+        return $this->buildWithConstructorParameters('BarStub', $namespace, new Collection([
+            $GizzStub,
+            $anotherArgument,
+            $data
+        ]));
+    }
+
+    public function buildGizz($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    {
+        return $this->buildWithEmptyConstructor('GizzStub', $namespace);
     }
 }

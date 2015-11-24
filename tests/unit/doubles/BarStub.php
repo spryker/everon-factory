@@ -12,5 +12,61 @@ namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
 class BarStub
 {
+    use Dependency\Gizz;
+
+
+    /**
+     * @var string
+     */
+    protected $anotherArgument;
+
+    /**
+     * @var array
+     */
+    protected $data = [];
+
+
+    /**
+     * BarStub constructor.
+     */
+    public function __construct(GizzStub $GizStub, $anotherArgument = 'anotherArgument', array $data=[])
+    {
+        $this->Gizz = $GizStub;
+        $this->anotherArgument = $anotherArgument;
+        $this->data = $data;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAnotherArgument()
+    {
+        return $this->anotherArgument;
+    }
+
+    /**
+     * @param string $anotherArgument
+     */
+    public function setAnotherArgument($anotherArgument)
+    {
+        $this->anotherArgument = $anotherArgument;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
+
 
 }

@@ -10,7 +10,9 @@
 namespace Everon\Component\Factory;
 
 
+use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
+use Everon\Component\Factory\Exception\MissingFactoryDependencyInterfaceException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 
 interface FactoryInterface
@@ -19,9 +21,30 @@ interface FactoryInterface
     /**
      * @param $class_name
      * @param $Instance
-     * @return
+     * @return void
      */
     public function injectDependencies($class_name, $Instance);
+
+    /**
+     * @param $class_name
+     * @param $namespace
+     *
+     * @throws MissingFactoryDependencyInterfaceException
+     * @throws UndefinedClassException
+     * @return object
+     */
+    public function buildWithEmptyConstructor($class_name, $namespace);
+
+    /**
+     * @param $class_name
+     * @param $namespace
+     * @param CollectionInterface $parameterCollection
+     *
+     * @throws MissingFactoryDependencyInterfaceException
+     * @throws UndefinedClassException
+     * @return object
+     */
+    public function buildWithConstructorParameters($class_name, $namespace, CollectionInterface $parameterCollection);
 
     /**
      * @return ContainerInterface
