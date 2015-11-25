@@ -13,7 +13,9 @@ use Everon\Component\Collection\Collection;
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Dependency\FactoryDependencyInterface;
+use Everon\Component\Factory\Exception\InstanceIsAbstractClassException;
 use Everon\Component\Factory\Exception\MissingFactoryDependencyInterfaceException;
+use Everon\Component\Factory\Exception\UnableToInstantiateException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 
 class Factory implements FactoryInterface
@@ -72,6 +74,14 @@ class Factory implements FactoryInterface
         $this->classExists($class_name);
 
         $ReflectionClass = new \ReflectionClass($class_name);
+
+        if ($ReflectionClass->isInstantiable() === false) {
+            if ($ReflectionClass->isAbstract()) {
+                throw new InstanceIsAbstractClassException($class_name);
+            } else {
+                throw new UnableToInstantiateException($class_name);
+            }
+        }
 
         $Instance = $ReflectionClass->newInstanceArgs(
             array_values($parameterCollection->toArray())

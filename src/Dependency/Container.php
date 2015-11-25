@@ -9,6 +9,7 @@
  */
 namespace Everon\Component\Factory\Dependency;
 
+use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Exception\DependencyCannotInjectItselfException;
 use Everon\Component\Factory\Exception\InstanceIsNotObjectException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
@@ -21,7 +22,8 @@ class Container implements ContainerInterface
     use EndsWith;
     use LastTokenToName;
 
-    const DEPENDENCY_INJECTION_FACTORY = 'Dependency\Injection\Factory';
+    const DEPENDENCY_INJECTION_FACTORY = 'Dependency\Factory';
+    const TYPE_SETTER_INJECTION = 'Dependency\Setter';
 
     /**
      * @var array
@@ -113,7 +115,15 @@ class Container implements ContainerInterface
                 throw new DependencyCannotInjectItselfException($receiverClassName);
             }
 
-            $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
+            $setterDependency = sprintf('%s\%s', static::TYPE_SETTER_INJECTION, $requiredDependency);
+            $isSetterInjection = $this->textEndsWith(
+                $dependencyName,
+                $setterDependency
+            );
+
+            if ($isSetterInjection) {
+                $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
+            }
         }
 
         $this->dependencies[$receiverClassName] = $dependencies;

@@ -13,5 +13,5 @@ use Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
 
 class FooStub
 {
-    use Dependency\Injection\Bar;
+    use Dependency\Setter\Bar;
 }

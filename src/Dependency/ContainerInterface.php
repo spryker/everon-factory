@@ -14,9 +14,9 @@ use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 interface ContainerInterface
 {
     /**
-     * @param $ReceiverInstance
+     * @param object $ReceiverInstance
      *
-     * @return
+     * @return void
      */
     public function inject($ReceiverInstance);
 

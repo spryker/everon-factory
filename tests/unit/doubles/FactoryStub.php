@@ -41,7 +41,7 @@ class FactoryStub extends Factory
      */
     public function buildBar(GizzStub $GizzStub, $anotherArgument, array $data, $namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
-        return $this->buildWithConstructorParameters('BarStub', $namespace, new Collection([
+        return $this->buildWithConstructorParameters('BarStub', $namespace, $this->buildParameterCollection([
             $GizzStub,
             $anotherArgument,
             $data

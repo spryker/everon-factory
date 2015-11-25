@@ -7,11 +7,11 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Everon\Component\Factory\Tests\Unit\Doubles\Dependency\Injection;
+namespace Everon\Component\Factory\Tests\Unit\Doubles\Dependency\Setter;
 
 use Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
 
-trait Gizz
+trait Foo
 {
-    use Dependency\Gizz;
+    use Dependency\Foo;
 }

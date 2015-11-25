@@ -21,6 +21,7 @@ interface FactoryInterface
     /**
      * @param $class_name
      * @param $Instance
+     *
      * @return void
      */
     public function injectDependencies($class_name, $Instance);

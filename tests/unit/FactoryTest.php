@@ -48,7 +48,9 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
         /** @var MockInterface $Container */
         $Container = $this->Factory->getDependencyContainer();
-        $Container->shouldReceive('inject')->times(1)->with($Fuzz);
+        $Container->shouldReceive('inject')->times(1)
+            ->with($Fuzz);
+
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
             ->with('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub')
