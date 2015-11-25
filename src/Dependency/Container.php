@@ -85,7 +85,7 @@ class Container implements ContainerInterface
             );
         }
 
-        return $traits;
+        return array_keys($traits);
     }
 
     /**

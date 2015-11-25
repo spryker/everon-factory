@@ -11,5 +11,14 @@ namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
 class FuzzStub
 {
-    use Dependency\Setter\Foo;
+    use Dependency\Foo;
+
+
+    /**
+     * @param FooStub $Foo
+     */
+    public function __construct(FooStub $Foo)
+    {
+        $this->Foo = $Foo;
+    }
 }

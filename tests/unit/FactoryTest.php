@@ -81,12 +81,12 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $Container->shouldReceive('inject')->times(1);
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
-            ->with('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub')
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub')
             ->andReturn(false);
 
-        $FuzzStub = $this->Factory->buildWithEmptyConstructor('FuzzStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+        $GizzStub = $this->Factory->buildWithEmptyConstructor('GizzStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
 
-        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub', $FuzzStub);
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub', $GizzStub);
     }
 
     public function test_build_with_constructor_parameters()

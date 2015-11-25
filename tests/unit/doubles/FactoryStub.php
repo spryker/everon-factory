@@ -9,7 +9,6 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
-use Everon\Component\Collection\Collection;
 use Everon\Component\Factory\Factory;
 
 class FactoryStub extends Factory
@@ -19,9 +18,11 @@ class FactoryStub extends Factory
      *
      * @return FuzzStub
      */
-    public function buildFuzz($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildFuzz(FooStub $FooStub, $namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
-        return $this->buildWithEmptyConstructor('FuzzStub', $namespace);
+        return $this->buildWithConstructorParameters('FuzzStub', $namespace, $this->buildParameterCollection([
+            $FooStub,
+        ]));
     }
 
     /**

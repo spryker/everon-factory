@@ -41,17 +41,17 @@ class FactoryWorkerTest extends \PHPUnit_Framework_TestCase
 
     public function test_build_with_empty_constructor()
     {
-        $FuzzMock = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub');
+        $GizzMock = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub');
 
         $Factory = $this->FactoryWorker->getFactory();
         /* @var MockInterface $Factory */
         $Factory->shouldReceive('buildWithEmptyConstructor')->times(1)
-            ->with('FuzzStub', 'Everon\Component\Factory\Tests\Unit\Doubles')
-            ->andReturn($FuzzMock);
+            ->with('GizzStub', 'Everon\Component\Factory\Tests\Unit\Doubles')
+            ->andReturn($GizzMock);
 
-        $FuzzStub = $this->FactoryWorker->buildFuzz();
+        $GizzStub = $this->FactoryWorker->buildGizz();
 
-        $this->assertInstanceOf(get_class($FuzzStub), $FuzzMock);
+        $this->assertInstanceOf(get_class($GizzStub), $GizzMock);
     }
 
     public function test_build_with_constructor_parameters()

@@ -20,7 +20,10 @@ class FactoryWorkerStub extends AbstractWorker
      */
     public function buildFuzz($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
-        return $this->getFactory()->buildWithEmptyConstructor('FuzzStub', $namespace);
+        $FooStub = $this->buildFoo($namespace);
+        return $this->getFactory()->buildWithConstructorParameters('FuzzStub', $namespace, $this->buildParameterCollection([
+            $FooStub,
+        ]));
     }
 
     /**
