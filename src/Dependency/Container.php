@@ -9,7 +9,6 @@
  */
 namespace Everon\Component\Factory\Dependency;
 
-use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Exception\DependencyCannotInjectItselfException;
 use Everon\Component\Factory\Exception\InstanceIsNotObjectException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
