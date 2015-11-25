@@ -12,14 +12,11 @@ namespace Everon\Component\Factory\Tests\Unit;
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\FactoryInterface;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryWorkerStub;
+use Everon\Component\Utils\TestCase\MockeryTest;
 use Mockery;
 use Mockery\MockInterface;
 
-/**
- * @runTestsInSeparateProcesses
- * @preserveGlobalState disabled
- */
-class FactoryWorkerTest extends \PHPUnit_Framework_TestCase
+class FactoryWorkerTest extends MockeryTest
 {
     /**
      * @var FactoryWorkerStub

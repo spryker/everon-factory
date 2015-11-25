@@ -12,12 +12,12 @@ namespace Everon\Component\Factory\Tests\Unit;
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Factory;
-use Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub;
+use Everon\Component\Utils\TestCase\MockeryTest;
 use Mockery;
 use Mockery\MockInterface;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends MockeryTest
 {
     /**
      * @var FactoryStub

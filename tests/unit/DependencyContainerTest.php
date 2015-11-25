@@ -9,17 +9,17 @@
  */
 namespace Everon\Component\Factory\Tests\Unit;
 
-use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\Container;
 use Everon\Component\Factory\Dependency\ContainerInterface;
-use Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FooStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub;
+use Everon\Component\Utils\TestCase\MockeryTest;
 use Mockery;
 
-class DependencyContainerTest extends \PHPUnit_Framework_TestCase
+class DependencyContainerTest extends MockeryTest
 {
+
     /**
      * @var ContainerInterface
      */
@@ -29,7 +29,6 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
      * @var FactoryStub
      */
     protected $Factory;
-
 
     protected function setUp()
     {
@@ -61,14 +60,9 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
             //uses same Logger instance
             $Logger = $Factory->getDependencyContainer()->resolve('Logger');
             return $Factory->buildBar($Logger, 'argument', [
-                'some' => 'data'
+                'some' => 'data',
             ]);
         });
-    }
-
-    public function tearDown()
-    {
-        Mockery::close();
     }
 
     public function test_setter_dependency_injection_one_logger_instance()
