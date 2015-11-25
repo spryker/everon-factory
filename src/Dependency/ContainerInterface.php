@@ -9,6 +9,7 @@
  */
 namespace Everon\Component\Factory\Dependency;
 
+use Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 
 interface ContainerInterface
@@ -31,6 +32,7 @@ interface ContainerInterface
      * @param $name
      * @param \Closure $ServiceClosure
      *
+     * @throws DependencyServiceAlreadyRegisteredException
      * @return void
      */
     public function register($name, \Closure $ServiceClosure);

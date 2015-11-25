@@ -14,4 +14,12 @@ use Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
 class FooStub
 {
     use Dependency\Setter\Bar;
+
+    /**
+     * @return LoggerStub
+     */
+    public function getLogger()
+    {
+        return $this->getBar()->getLogger();
+    }
 }

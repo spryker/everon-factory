@@ -81,21 +81,21 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $Container->shouldReceive('inject')->times(1);
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
-            ->with('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub')
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub')
             ->andReturn(false);
 
-        $GizzStub = $this->Factory->buildWithEmptyConstructor('GizzStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+        $LoggerStub = $this->Factory->buildWithEmptyConstructor('LoggerStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
 
-        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub', $GizzStub);
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub', $LoggerStub);
     }
 
     public function test_build_with_constructor_parameters()
     {
-        $GizzStub = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub');
+        $LoggerStub = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub');
 
         $CollectionParameters = Mockery::mock('Everon\Component\Collection\CollectionInterface');
         $CollectionParameters->shouldReceive('toArray')->times(1)->andReturn([
-            $GizzStub,
+            $LoggerStub,
             'argument', [
                 'some' => 'data'
             ]

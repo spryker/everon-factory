@@ -12,7 +12,7 @@ namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
 class BarStub
 {
-    use Dependency\Gizz;
+    use Dependency\Logger;
 
 
     /**
@@ -29,9 +29,9 @@ class BarStub
     /**
      * BarStub constructor.
      */
-    public function __construct(GizzStub $GizStub, $anotherArgument = 'anotherArgument', array $data=[])
+    public function __construct(LoggerStub $LoggerStub, $anotherArgument = 'anotherArgument', array $data=[])
     {
-        $this->Gizz = $GizStub;
+        $this->Logger = $LoggerStub;
         $this->anotherArgument = $anotherArgument;
         $this->data = $data;
     }
@@ -67,6 +67,5 @@ class BarStub
     {
         $this->data = $data;
     }
-
 
 }

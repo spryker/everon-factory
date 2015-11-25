@@ -9,6 +9,6 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
-class GizzStub
+class LoggerStub
 {
 }

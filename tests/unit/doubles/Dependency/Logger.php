@@ -9,29 +9,29 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
 
-use Everon\Component\Factory\Tests\Unit\Doubles\GizzStub;
+use Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub;
 
-trait Gizz
+trait Logger
 {
     /**
-     * @var GizzStub
+     * @var LoggerStub
      */
-    protected $Gizz;
+    protected $Logger;
 
     /**
-     * @return GizzStub
+     * @return LoggerStub
      */
-    public function getGizz()
+    public function getLogger()
     {
-        return $this->Gizz;
+        return $this->Logger;
     }
 
     /**
-     * @param GizzStub $Gizz
+     * @param LoggerStub $Logger
      */
-    public function setGizz(GizzStub $Gizz)
+    public function setLogger(LoggerStub $Logger)
     {
-        $this->Gizz = $Gizz;
+        $this->Logger = $Logger;
     }
 
 }

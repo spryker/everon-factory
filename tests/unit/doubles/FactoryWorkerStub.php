@@ -21,7 +21,7 @@ class FactoryWorkerStub extends AbstractWorker
     public function buildFuzz($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
         $FooStub = $this->buildFoo($namespace);
-        return $this->getFactory()->buildWithConstructorParameters('FuzzStub', $namespace, $this->buildParameterCollection([
+        return $this->getFactory()->buildWithConstructorParameters('FuzzStub', $namespace, $this->getFactory()->buildParameterCollection([
             $FooStub,
         ]));
     }
@@ -43,10 +43,11 @@ class FactoryWorkerStub extends AbstractWorker
      */
     public function buildBar($anotherArgument, array $data, $namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
-        $GizzStub = $this->buildGizz($namespace);
+        //$LoggerStub = $this->getFactory()->buildWithEmptyConstructor('LoggerStub', $namespace);
+        $LoggerStub = $this->getFactory()->getDependencyContainer()->resolve('Logger');
         return $this->getFactory()->buildWithConstructorParameters('BarStub', $namespace,
             $this->getFactory()->buildParameterCollection([
-                $GizzStub,
+                $LoggerStub,
                 $anotherArgument,
                 $data
             ])
@@ -56,11 +57,11 @@ class FactoryWorkerStub extends AbstractWorker
     /**
      * @param string $namespace
      *
-     * @return GizzStub
+     * @return LoggerStub
      */
-    public function buildGizz($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildLogger($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
-        return $this->getFactory()->buildWithEmptyConstructor('GizzStub', $namespace);
+        return $this->getFactory()->buildWithEmptyConstructor('LoggerStub', $namespace);
     }
 
 }

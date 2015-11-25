@@ -41,31 +41,36 @@ class FactoryWorkerTest extends \PHPUnit_Framework_TestCase
 
     public function test_build_with_empty_constructor()
     {
-        $GizzMock = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub');
+        $LoggerMock = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub');
 
         $Factory = $this->FactoryWorker->getFactory();
         /* @var MockInterface $Factory */
         $Factory->shouldReceive('buildWithEmptyConstructor')->times(1)
-            ->with('GizzStub', 'Everon\Component\Factory\Tests\Unit\Doubles')
-            ->andReturn($GizzMock);
+            ->with('LoggerStub', 'Everon\Component\Factory\Tests\Unit\Doubles')
+            ->andReturn($LoggerMock);
 
-        $GizzStub = $this->FactoryWorker->buildGizz();
+        $LoggerStub = $this->FactoryWorker->buildLogger();
 
-        $this->assertInstanceOf(get_class($GizzStub), $GizzMock);
+        $this->assertInstanceOf(get_class($LoggerStub), $LoggerMock);
     }
 
     public function test_build_with_constructor_parameters()
     {
         $BarStubMock = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\BarzStub');
-        $GizzStub = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\GizzStub');
+        $LoggerStub = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub');
         $CollectionParameters = Mockery::mock('Everon\Component\Collection\CollectionInterface');
 
         $parameters = [
-            $GizzStub,
+            $LoggerStub,
             'anotherArgument', [
                 'some' => 'data',
             ],
         ];
+
+        $Container = Mockery::mock('Everon\Component\Factory\Dependency\ContainerInterface');
+        $Container->shouldReceive('resolve')->times(1)
+            ->with('Logger')
+            ->andReturn($LoggerStub);
 
         $Factory = $this->FactoryWorker->getFactory();
         /* @var MockInterface $Factory */
@@ -73,13 +78,17 @@ class FactoryWorkerTest extends \PHPUnit_Framework_TestCase
             ->with($parameters)
             ->andReturn($CollectionParameters);
 
-        $Factory->shouldReceive('buildWithEmptyConstructor')->times(1)
-            ->with('GizzStub', 'Everon\Component\Factory\Tests\Unit\Doubles')
-            ->andReturn($GizzStub);
+        $Factory->shouldReceive('buildWithEmptyConstructor')
+            ->times(0) //this should never be called, we use same instance of Logger
+            ->with('LoggerStub', 'Everon\Component\Factory\Tests\Unit\Doubles')
+            ->andReturn($LoggerStub);
 
         $Factory->shouldReceive('buildWithConstructorParameters')->times(1)
             ->with('BarStub', 'Everon\Component\Factory\Tests\Unit\Doubles', $CollectionParameters)
             ->andReturn($BarStubMock);
+
+        $Factory->shouldReceive('getDependencyContainer')->times(1)
+            ->andReturn($Container);
 
         /* @var CollectionInterface $CollectionParameters */
         $BarStub = $this->FactoryWorker->buildBar('anotherArgument', [

@@ -10,6 +10,7 @@
 namespace Everon\Component\Factory\Dependency;
 
 use Everon\Component\Factory\Exception\DependencyCannotInjectItselfException;
+use Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException;
 use Everon\Component\Factory\Exception\InstanceIsNotObjectException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 use Everon\Component\Factory\Exception\UndefinedDependencySetterException;
@@ -141,6 +142,10 @@ class Container implements ContainerInterface
      */
     public function register($name, \Closure $ServiceClosure)
     {
+        if ($this->isRegistered($name)) {
+            throw new DependencyServiceAlreadyRegisteredException($name);
+        }
+
         $this->definitions[$name] = $ServiceClosure;
         unset($this->services[$name]);
     }

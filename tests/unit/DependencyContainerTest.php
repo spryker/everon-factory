@@ -12,6 +12,7 @@ namespace Everon\Component\Factory\Tests\Unit;
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\Container;
 use Everon\Component\Factory\Dependency\ContainerInterface;
+use Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FooStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub;
@@ -36,26 +37,30 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
         $this->Factory = new FactoryStub($this->Container);
         $Factory = $this->Factory;
 
-        $this->Container->register('Gizz', function() use ($Factory) {
-            //no dependencies required
-            return $Factory->buildGizz();
+        //everything used with resolve() must be registered with register
+
+        $this->Container->register('Logger', function () use ($Factory) {
+            return $Factory->buildLogger();
         });
 
-        $this->Container->register('Fuzz', function() use ($Factory) {
+        $this->Container->register('Fuzz', function () use ($Factory) {
             //requires constructor injection of Foo, see FooStub
-            $FooStub = $Factory->getDependencyContainer()->resolve('Foo');
+            //creates always new instance of Foo
+            $FooStub = $Factory->buildFoo();
             return $Factory->buildFuzz($FooStub);
         });
 
-        $this->Container->register('Foo', function() use ($Factory) {
+        $this->Container->register('Foo', function () use ($Factory) {
             //requires setter injection of Bar, see FooStub
+            //Bar requires constructor injection of Logger
             return $Factory->buildFoo();
         });
 
-        $this->Container->register('Bar', function() use ($Factory) {
-            //requires constructor injection of $Gizz, see BarStub
-            $Gizz = $Factory->getDependencyContainer()->resolve('Gizz');
-            return $Factory->buildBar($Gizz, 'argument', [
+        $this->Container->register('Bar', function () use ($Factory) {
+            //requires constructor injection of $Logger, see BarStub
+            //uses same Logger instance
+            $Logger = $Factory->getDependencyContainer()->resolve('Logger');
+            return $Factory->buildBar($Logger, 'argument', [
                 'some' => 'data'
             ]);
         });
@@ -66,15 +71,16 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
         Mockery::close();
     }
 
-    public function test_setter_dependency_injection()
+    public function test_setter_dependency_injection_one_logger_instance()
     {
-        $Fuzz = $this->Factory->getDependencyContainer()->resolve('Fuzz');
+        $Foo = new FooStub();
 
-        /** @var CollectionInterface $ParameterCollection  */
-        $this->Container->inject($Fuzz);
+        $this->Container->inject($Foo);
 
-        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FooStub', $Fuzz->getFoo());
-        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $Fuzz->getFoo()->getBar());
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $Foo->getBar());
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub', $Foo->getBar()->getLogger());
+
+        $this->assertEquals($Foo->getLogger(), $Foo->getBar()->getLogger());
     }
 
     public function test_setter_dependency_should_only_be_injected_once()
@@ -82,11 +88,24 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
         $FooStub = new FooStub();
         $Fuzz = new FuzzStub($FooStub);
 
-        /** @var CollectionInterface $ParameterCollection  */
         $this->Container->inject($Fuzz);
         $this->Container->inject($Fuzz);
 
         $this->assertTrue($this->Container->isInjected(get_class($Fuzz)));
+    }
+
+    /**
+     * @expectedException \Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException
+     * @expectedExceptionMessage Dependency service "Fuzz" is already registered
+     */
+    public function test_service_only_registers_once()
+    {
+        $Factory = $this->Factory;
+
+        $this->Container->register('Fuzz', function () use ($Factory) {
+            $FooStub = $Factory->buildFoo();
+            return $Factory->buildFuzz($FooStub);
+        });
     }
 
 }
