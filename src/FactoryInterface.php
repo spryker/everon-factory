@@ -74,4 +74,11 @@ interface FactoryInterface
      */
     public function classExists($class);
 
+    /**
+     * @param array $parameters
+     *
+     * @return CollectionInterface
+     */
+    public function buildParameterCollection(array $parameters);
+
 }

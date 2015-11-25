@@ -9,6 +9,7 @@
  */
 namespace Everon\Component\Factory;
 
+use Everon\Component\Collection\Collection;
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Dependency\FactoryDependencyInterface;
@@ -52,7 +53,6 @@ class Factory implements FactoryInterface
      */
     public function buildWithEmptyConstructor($class_name, $namespace)
     {
-
         $class_name = $this->getFullClassName($namespace, $class_name);
         $this->classExists($class_name);
 
@@ -121,26 +121,12 @@ class Factory implements FactoryInterface
     }
 
     /**
-     * @inheritdoc
+     * @param array $parameters
+     *
+     * @return CollectionInterface
      */
-    public function buildDateTime($time = 'now', \DateTimeZone $timezone = null)
+    public function buildParameterCollection(array $parameters)
     {
-        return new \DateTime($time, $timezone);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildDateTimeZone($timezone)
-    {
-        return new \DateTimeZone($timezone);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildIntlDateFormatter($locale, $datetype, $timetype, $timezone, $calendar, $pattern)
-    {
-        return new \IntlDateFormatter($locale, $datetype, $timetype, $timezone, $calendar, $pattern);
+        return new Collection($parameters);
     }
 }

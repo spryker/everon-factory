@@ -10,6 +10,7 @@
 namespace Everon\Component\Factory;
 
 
+
 abstract class AbstractWorker implements FactoryWorkerInterface
 {
     use Dependency\Factory;
@@ -18,4 +19,5 @@ abstract class AbstractWorker implements FactoryWorkerInterface
     {
         $this->Factory = $Factory;
     }
+
 }
