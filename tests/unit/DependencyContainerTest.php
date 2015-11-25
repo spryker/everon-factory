@@ -87,9 +87,13 @@ class DependencyContainerTest extends \PHPUnit_Framework_TestCase
     {
         $FooStub = new FooStub();
         $Fuzz = new FuzzStub($FooStub);
+        $ExpectedFuzz = clone $Fuzz;
 
         $this->Container->inject($Fuzz);
+        $this->assertEquals($ExpectedFuzz, $Fuzz);
+
         $this->Container->inject($Fuzz);
+        $this->assertEquals($ExpectedFuzz, $Fuzz);
 
         $this->assertTrue($this->Container->isInjected(get_class($Fuzz)));
     }
