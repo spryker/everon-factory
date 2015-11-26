@@ -33,11 +33,6 @@ class FactoryTest extends MockeryTest
         $this->Factory = new Factory($Container);
     }
 
-    public function tearDown()
-    {
-        Mockery::close();
-    }
-
     public function test_inject_dependencies_and_require_factory()
     {
         $Fuzz = Mockery::mock(
@@ -48,8 +43,7 @@ class FactoryTest extends MockeryTest
 
         /** @var MockInterface $Container */
         $Container = $this->Factory->getDependencyContainer();
-        $Container->shouldReceive('inject')->times(1)
-            ->with($Fuzz);
+        $Container->shouldReceive('inject')->times(1);
 
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
@@ -65,7 +59,7 @@ class FactoryTest extends MockeryTest
 
         /** @var MockInterface $Container */
         $Container = $this->Factory->getDependencyContainer();
-        $Container->shouldReceive('inject')->times(1)->with($Fuzz);
+        $Container->shouldReceive('inject')->times(1);
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
             ->with('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub')

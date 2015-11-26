@@ -28,6 +28,14 @@ interface FactoryInterface
 
     /**
      * @param $class_name
+     * @param $Instance
+     *
+     * @return void
+     */
+    public function injectDependenciesOnce($class_name, $Instance);
+
+    /**
+     * @param $class_name
      * @param $namespace
      *
      * @throws MissingFactoryDependencyInterfaceException
@@ -81,5 +89,12 @@ interface FactoryInterface
      * @return CollectionInterface
      */
     public function buildParameterCollection(array $parameters);
+
+    /**
+     * @param $name
+     *
+     * @return FactoryWorkerInterface
+     */
+    public function getWorkerByName($name);
 
 }

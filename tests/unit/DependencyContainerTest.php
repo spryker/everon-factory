@@ -69,7 +69,7 @@ class DependencyContainerTest extends MockeryTest
     {
         $Foo = new FooStub();
 
-        $this->Container->inject($Foo);
+        $this->Container->inject(get_class($Foo), $Foo);
 
         $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $Foo->getBar());
         $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub', $Foo->getBar()->getLogger());
@@ -82,10 +82,10 @@ class DependencyContainerTest extends MockeryTest
         $FooStub = new FooStub();
         $Fuzz = new FuzzStub($FooStub);
 
-        $this->Container->inject($Fuzz);
+        $this->Container->inject(get_class($Fuzz), $Fuzz);
         $ExpectedFoo = $Fuzz->getFoo();
 
-        $this->Container->inject($Fuzz);
+        $this->Container->inject(get_class($Fuzz), $Fuzz);
         $ActualFoo = $Fuzz->getFoo();
 
         $this->assertTrue($this->Container->isInjected(get_class($Fuzz)));

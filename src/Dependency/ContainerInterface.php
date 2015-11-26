@@ -15,11 +15,20 @@ use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 interface ContainerInterface
 {
     /**
+     * @param string $receiver_class_name
      * @param object $ReceiverInstance
      *
      * @return void
      */
-    public function inject($ReceiverInstance);
+    public function inject($receiver_class_name, $ReceiverInstance);
+
+    /**
+     * @param string $receiver_class_name
+     * @param object $ReceiverInstance
+     *
+     * @return void
+     */
+    public function injectOnce($receiver_class_name, $ReceiverInstance);
 
     /**
      * @param $class_name

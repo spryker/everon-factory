@@ -59,8 +59,9 @@ class Container implements ContainerInterface
         $method = 'set'.$setter_name; //eg. setConfigManager
         if (method_exists($Instance, $method) === false) {
             throw new UndefinedDependencySetterException([
-                get_class($Instance),
-                $setter_name
+                $method,
+                $setter_name,
+                get_class($Instance)
             ]);
         }
 
@@ -91,28 +92,23 @@ class Container implements ContainerInterface
     /**
      * @inheritdoc
      */
-    public function inject($ReceiverInstance)
+    public function inject($receiver_class_name, $ReceiverInstance)
     {
         if (is_object($ReceiverInstance) === false) {
             throw new InstanceIsNotObjectException();
         }
 
-        $receiverClassName = get_class($ReceiverInstance);
-        if ($this->isInjected($receiverClassName)) {
-            return;
-        }
-
-        $dependencies = $this->getClassDependencies($receiverClassName);
+        $dependencies = $this->getClassDependencies($receiver_class_name);
         foreach ($dependencies as $dependencyName) {
             if ($this->textEndsWith($dependencyName, static::DEPENDENCY_INJECTION_FACTORY)) {
-                $this->requiresFactory[$receiverClassName] = true;
+                $this->requiresFactory[$receiver_class_name] = true;
                 continue;
             }
 
             $requiredDependency = $this->textLastTokenToName($dependencyName);
 
-            if (strcasecmp($requiredDependency, $this->textLastTokenToName($receiverClassName)) === 0) {
-                throw new DependencyCannotInjectItselfException($receiverClassName);
+            if (strcasecmp($requiredDependency, $this->textLastTokenToName($receiver_class_name)) === 0) {
+                throw new DependencyCannotInjectItselfException($receiver_class_name);
             }
 
             $setterDependency = sprintf('%s\%s', static::TYPE_SETTER_INJECTION, $requiredDependency);
@@ -126,7 +122,19 @@ class Container implements ContainerInterface
             }
         }
 
-        $this->dependencies[$receiverClassName] = $dependencies;
+        $this->dependencies[$receiver_class_name] = $dependencies;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function injectOnce($receiver_class_name, $ReceiverInstance)
+    {
+        if ($this->isInjected($receiver_class_name)) {
+            return;
+        }
+
+        $this->inject($receiver_class_name, $ReceiverInstance);
     }
 
     /**

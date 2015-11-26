@@ -31,11 +31,6 @@ class FactoryWorkerTest extends MockeryTest
         $this->FactoryWorker = new FactoryWorkerStub($Factory);
     }
 
-    public function tearDown()
-    {
-        Mockery::close();
-    }
-
     public function test_build_with_empty_constructor()
     {
         $LoggerMock = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub');

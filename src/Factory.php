@@ -24,7 +24,12 @@ class Factory implements FactoryInterface
     /**
      * @var ContainerInterface
      */
-    protected $DependencyContainer = null;
+    protected $DependencyContainer;
+
+    /**
+     * @var FactoryWorkerInterface[]
+     */
+    protected $WorkerCollection;
 
 
     /**
@@ -33,6 +38,7 @@ class Factory implements FactoryInterface
     public function __construct(ContainerInterface $Container)
     {
         $this->DependencyContainer = $Container;
+        $this->WorkerCollection = new Collection([]);
     }
 
     /**
@@ -40,7 +46,22 @@ class Factory implements FactoryInterface
      */
     public function injectDependencies($class_name, $Instance)
     {
-        $this->getDependencyContainer()->inject($Instance);
+        $this->getDependencyContainer()->inject($class_name, $Instance);
+        if ($this->getDependencyContainer()->isFactoryRequired($class_name)) {
+            if (($Instance instanceof FactoryDependencyInterface) === false) {
+                throw new MissingFactoryDependencyInterfaceException($class_name);
+            }
+            /** @var FactoryDependencyInterface $Instance */
+            $Instance->setFactory($this);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function injectDependenciesOnce($class_name, $Instance)
+    {
+        $this->getDependencyContainer()->injectOnce($class_name, $Instance);
         if ($this->getDependencyContainer()->isFactoryRequired($class_name)) {
             if (($Instance instanceof FactoryDependencyInterface) === false) {
                 throw new MissingFactoryDependencyInterfaceException($class_name);
@@ -139,4 +160,27 @@ class Factory implements FactoryInterface
     {
         return new Collection($parameters);
     }
+
+    /**
+     * @param $name
+     *
+     * @return FactoryWorkerInterface
+     */
+    public function getWorkerByName($name, $namespace='Everon\Component\Factory')
+    {
+        $className = sprintf('%sFactoryWorker', $name);
+
+        if ($this->WorkerCollection->has($className)) {
+            return $this->WorkerCollection->get($className);
+        }
+
+        $Worker = $this->buildWithConstructorParameters($className, $namespace, $this->buildParameterCollection([
+            $this
+        ]));
+
+        $this->WorkerCollection->set($name, $Worker);
+
+        return $this->WorkerCollection->get($name);
+    }
+
 }

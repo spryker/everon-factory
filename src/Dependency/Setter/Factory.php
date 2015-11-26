@@ -7,16 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Everon\Component\Factory;
+namespace Everon\Component\Factory\Dependency\Setter;
 
-
-abstract class AbstractWorker implements FactoryWorkerInterface
+trait Factory
 {
-    use Dependency\Factory;
-    
-    public function __construct(FactoryInterface $Factory)
-    {
-        $this->Factory = $Factory;
-    }
-
+    use \Everon\Component\Factory\Dependency\Factory;
 }
