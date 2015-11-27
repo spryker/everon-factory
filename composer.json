@@ -18,7 +18,8 @@
   "require": {
     "php": ">=5.6",
     "everon/collection": "dev-development",
-    "everon/utils": "dev-development"
+    "everon/factory": "dev-development",
+    "everon/utils": "dev-development",
   },
   "require-dev": {
     "phpunit/phpunit": "*",
