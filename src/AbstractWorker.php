@@ -18,10 +18,22 @@ abstract class AbstractWorker implements FactoryWorkerInterface
      * @return void
      */
     protected abstract function registerBeforeWork();
-    
+
+
+    /**
+     * @param FactoryInterface $Factory
+     */
     public function __construct(FactoryInterface $Factory)
     {
         $this->Factory = $Factory;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function doWork()
+    {
+        $this->registerBeforeWork();
     }
 
 }

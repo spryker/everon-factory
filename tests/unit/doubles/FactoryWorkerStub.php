@@ -19,7 +19,7 @@ class FactoryWorkerStub extends AbstractWorker
     protected function registerBeforeWork()
     {
         $Factory = $this->getFactory();
-        $this->getFactory()->getDependencyContainer()->register('FactoryWorkerStub', function() use ($Factory) {
+        $this->getFactory()->getDependencyContainer()->register('FactoryWorkerStubFac', function() use ($Factory) {
             return $Factory->getWorkerByName('FactoryWorkerStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
         });
     }

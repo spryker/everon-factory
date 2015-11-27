@@ -9,6 +9,7 @@
  */
 namespace Everon\Component\Factory\Dependency;
 
+use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 
@@ -63,11 +64,11 @@ interface ContainerInterface
     public function resolve($name);
 
     /**
-     * @param $name
+     * @param $class_name
      *
      * @return bool
      */
-    public function isInjected($name);
+    public function isInjected($class_name);
 
     /**
      * @param $name
@@ -77,17 +78,27 @@ interface ContainerInterface
     public function isRegistered($name);
 
     /**
-     * @return array
+     * @return CollectionInterface
      */
-    public function getDefinitions();
+    public function getServiceDefinitionCollection();
 
     /**
-     * @return array
+     * @return CollectionInterface
      */
-    public function getDependencies();
+    public function getClassDependencyCollection();
 
     /**
-     * @return array
+     * @return CollectionInterface
      */
-    public function getServices();
+    public function getServiceCollection();
+
+    /**
+     * @return CollectionInterface
+     */
+    public function getRequireFactoryCollection();
+
+    /**
+     * @return CollectionInterface
+     */
+    public function getInjectedCollection();
 }

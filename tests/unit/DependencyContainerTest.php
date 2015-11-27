@@ -77,21 +77,44 @@ class DependencyContainerTest extends MockeryTest
         $this->assertEquals($Foo->getLogger(), $Foo->getBar()->getLogger());
     }
 
-    public function test_setter_dependency_should_only_be_injected_once()
+    public function test_setter_dependency_should_be_injected_many_times()
     {
         $FooStub = new FooStub();
         $Fuzz = new FuzzStub($FooStub);
 
         $this->Container->inject(get_class($Fuzz), $Fuzz);
-        $ExpectedFoo = $Fuzz->getFoo();
 
-        $this->Container->inject(get_class($Fuzz), $Fuzz);
-        $ActualFoo = $Fuzz->getFoo();
+        $FooImpostor = new FooStub();
+        $FuzzImpostor = new FuzzStub($FooImpostor);
+        $this->Container->inject(get_class($Fuzz), $FuzzImpostor);
+        $ActualFoo = $FuzzImpostor->getFoo();
 
-        $this->assertTrue($this->Container->isInjected(get_class($Fuzz)));
+        $this->assertFalse($this->Container->isInjected(get_class($Fuzz)));
+        $this->assertFalse($this->Container->isInjected(get_class($FooImpostor)));
 
-        $this->assertEquals($ExpectedFoo, $ActualFoo);
+        $this->assertNotEquals($FooStub, $ActualFoo);
     }
+
+    public function test_setter_dependency_should_only_be_injected_once()
+    {
+        $FooStub = new FooStub();
+        $Fuzz = new FuzzStub($FooStub);
+
+        $this->Container->injectOnce(get_class($Fuzz), $Fuzz);
+        $this->assertFalse($this->Container->isInjected(get_class($Fuzz)));
+
+        $this->Container->injectOnce(get_class($Fuzz), $Fuzz);
+        $this->assertFalse($this->Container->isInjected(get_class($Fuzz)));
+
+        $this->Container->injectOnce(get_class($FooStub), $FooStub);
+        $this->assertTrue($this->Container->isInjected(get_class($FooStub)));
+
+        $this->Container->injectOnce(get_class($FooStub), $FooStub);
+        $this->assertTrue($this->Container->isInjected(get_class($FooStub)));
+
+        $this->assertEquals($FooStub, $Fuzz->getFoo());
+    }
+
 
     /**
      * @expectedException \Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException

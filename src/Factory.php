@@ -46,8 +46,8 @@ class Factory implements FactoryInterface
      */
     public function injectDependencies($class_name, $Instance)
     {
-        $this->injectFactoryWhenRequired($class_name, $Instance);
         $this->getDependencyContainer()->inject($class_name, $Instance);
+        $this->injectFactoryWhenRequired($class_name, $Instance);
     }
 
     /**
@@ -55,8 +55,8 @@ class Factory implements FactoryInterface
      */
     public function injectDependenciesOnce($class_name, $Instance)
     {
-        $this->injectFactoryWhenRequired($class_name, $Instance);
         $this->getDependencyContainer()->injectOnce($class_name, $Instance);
+        $this->injectFactoryWhenRequired($class_name, $Instance);
     }
 
     /**
@@ -180,9 +180,11 @@ class Factory implements FactoryInterface
             $this
         ]));
 
-        static::$WorkerCollection->set($name, $Worker);
+        $Worker->doWork();
 
-        return static::$WorkerCollection->get($name);
+        static::$WorkerCollection->set($className, $Worker);
+
+        return static::$WorkerCollection->get($className);
     }
 
 }

@@ -13,4 +13,8 @@ use Everon\Component\Factory\Dependency\FactoryDependencyInterface;
 
 interface FactoryWorkerInterface extends FactoryDependencyInterface
 {
+    /**
+     * @return void
+     */
+    public function doWork();
 }

@@ -13,7 +13,6 @@ class FuzzStub
 {
     use Dependency\Foo;
 
-
     /**
      * @param FooStub $Foo
      */

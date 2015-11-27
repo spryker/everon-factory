@@ -9,6 +9,8 @@
  */
 namespace Everon\Component\Factory\Dependency;
 
+use Everon\Component\Collection\Collection;
+use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Exception\DependencyCannotInjectItselfException;
 use Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException;
 use Everon\Component\Factory\Exception\InstanceIsNotObjectException;
@@ -26,47 +28,55 @@ class Container implements ContainerInterface
     const TYPE_SETTER_INJECTION = 'Dependency\Setter';
 
     /**
-     * @var array
+     * @var CollectionInterface
      */
-    protected $definitions = [];
+    protected $ServiceDefinitionCollection;
 
     /**
-     * @var array
+     * @var CollectionInterface
      */
-    protected $services = [];
+    protected $ServiceCollection;
 
     /**
-     * @var array
+     * @var CollectionInterface
      */
-    protected $dependencies = [];
+    protected $ClassDependencyCollection;
 
     /**
-     * @var array
+     * @var CollectionInterface
      */
-    protected $requiresFactory = [];
+    protected $RequireFactoryCollection;
+
+    /**
+     * @var CollectionInterface
+     */
+    protected $InjectedCollection;
 
 
     /**
      * @param $setter_name
-     * @param $Instance
+     * @param $Receiver
      *
      * @throws UndefinedContainerDependencyException
      * @throws UndefinedDependencySetterException
      * @internal param $dependency_name
      */
-    protected function injectSetterDependency($setter_name, $Instance)
+    protected function injectSetterDependency($setter_name, $Receiver)
     {
+        $receiverClassName = get_class($Receiver);
         $method = 'set'.$setter_name; //eg. setConfigManager
-        if (method_exists($Instance, $method) === false) {
+        if (method_exists($Receiver, $method) === false) {
             throw new UndefinedDependencySetterException([
                 $method,
                 $setter_name,
-                get_class($Instance)
+                $receiverClassName
             ]);
         }
 
         $Dependency = $this->resolve($setter_name);
-        $Instance->$method($Dependency);
+        $Receiver->$method($Dependency);
+
+        $this->getInjectedCollection()->set($receiverClassName, true);
     }
 
     /**
@@ -76,6 +86,10 @@ class Container implements ContainerInterface
      */
     protected function getClassDependencies($class_name, $autoload = true)
     {
+        if ($this->getClassDependencyCollection()->has($class_name)) {
+            return $this->getClassDependencyCollection()->get($class_name);
+        }
+
         $traits = class_uses($class_name, $autoload);
         $parents = class_parents($class_name, $autoload);
 
@@ -86,7 +100,10 @@ class Container implements ContainerInterface
             );
         }
 
-        return array_keys($traits);
+        $dependencies = array_keys($traits);
+        $this->getClassDependencyCollection()->set($class_name, $dependencies);
+
+        return $this->getClassDependencyCollection()->get($class_name);
     }
 
     /**
@@ -101,7 +118,7 @@ class Container implements ContainerInterface
         $dependencies = $this->getClassDependencies($receiver_class_name);
         foreach ($dependencies as $dependencyName) {
             if ($this->textEndsWith($dependencyName, static::DEPENDENCY_INJECTION_FACTORY)) {
-                $this->requiresFactory[$receiver_class_name] = true;
+                $this->getRequireFactoryCollection()->set($receiver_class_name, true);
                 continue;
             }
 
@@ -121,8 +138,6 @@ class Container implements ContainerInterface
                 $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
             }
         }
-
-        $this->dependencies[$receiver_class_name] = $dependencies;
     }
 
     /**
@@ -142,7 +157,7 @@ class Container implements ContainerInterface
      */
     public function isFactoryRequired($class_name)
     {
-        return isset($this->requiresFactory[$class_name]) && $this->requiresFactory[$class_name];
+        return $this->getRequireFactoryCollection()->has($class_name) && $this->getRequireFactoryCollection()->get($class_name);
     }
 
     /**
@@ -154,8 +169,9 @@ class Container implements ContainerInterface
             throw new DependencyServiceAlreadyRegisteredException($name);
         }
 
-        $this->definitions[$name] = $ServiceClosure;
-        unset($this->services[$name]);
+        $this->getServiceDefinitionCollection()->set($name, $ServiceClosure);
+
+        $this->getServiceCollection()->remove($name);
     }
 
     /**
@@ -175,27 +191,29 @@ class Container implements ContainerInterface
      */
     public function resolve($name)
     {
-        if (isset($this->definitions[$name]) === false) {
+        if ($this->getServiceDefinitionCollection()->has($name) === false) {
             throw new UndefinedContainerDependencyException($name);
         }
 
-        if (isset($this->services[$name])) {
-            return $this->services[$name];
+        if ($this->getServiceCollection()->has($name)) {
+            return $this->getServiceCollection()->get($name);
         }
 
-        if (is_callable($this->definitions[$name])) {
-            $this->services[$name] = $this->definitions[$name]();
+        /** @var \Closure $Service */
+        $Service = $this->getServiceDefinitionCollection()->get($name);
+        if (is_callable($Service)) {
+            $this->getServiceCollection()->set($name, $Service());
         }
 
-        return $this->services[$name];
+        return $this->getServiceCollection()->get($name);
     }
 
     /**
      * @inheritdoc
      */
-    public function isInjected($name)
+    public function isInjected($class_name)
     {
-        return isset($this->dependencies[$name]);
+        return $this->getInjectedCollection()->has($class_name) && $this->getInjectedCollection()->get($class_name);
     }
 
     /**
@@ -203,31 +221,67 @@ class Container implements ContainerInterface
      */
     public function isRegistered($name)
     {
-        return (isset($this->definitions[$name]) || isset($this->services[$name]));
+        return ($this->getServiceDefinitionCollection()->has($name) || $this->getServiceCollection()->has($name));
     }
 
     /**
      * @inheritdoc
      */
-    public function getDefinitions()
+    public function getServiceDefinitionCollection()
     {
-        return $this->definitions;
+        if ($this->ServiceDefinitionCollection === null) {
+            $this->ServiceDefinitionCollection = new Collection([]);
+        }
+
+        return $this->ServiceDefinitionCollection;
     }
 
     /**
      * @inheritdoc
      */
-    public function getDependencies()
+    public function getClassDependencyCollection()
     {
-        return $this->dependencies;
+        if ($this->ClassDependencyCollection === null) {
+            $this->ClassDependencyCollection = new Collection([]);
+        }
+
+        return $this->ClassDependencyCollection;
     }
 
     /**
      * @inheritdoc
      */
-    public function getServices()
+    public function getServiceCollection()
     {
-        return $this->services;
+        if ($this->ServiceCollection === null) {
+            $this->ServiceCollection = new Collection([]);
+        }
+
+        return $this->ServiceCollection;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getRequireFactoryCollection()
+    {
+        if ($this->RequireFactoryCollection === null) {
+            $this->RequireFactoryCollection = new Collection([]);
+        }
+
+        return $this->RequireFactoryCollection;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getInjectedCollection()
+    {
+        if ($this->InjectedCollection === null) {
+            $this->InjectedCollection = new Collection([]);
+        }
+
+        return $this->InjectedCollection;
     }
 
 }

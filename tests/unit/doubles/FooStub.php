@@ -15,6 +15,14 @@ class FooStub
 {
     use Dependency\Setter\Bar;
 
+    protected $timeStamp = null;
+
+
+    public function __construct()
+    {
+        $this->timeStamp = rand(0, time());
+    }
+
     /**
      * @return LoggerStub
      */
