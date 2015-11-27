@@ -176,6 +176,7 @@ class Factory implements FactoryInterface
             return static::$WorkerCollection->get($className);
         }
 
+        /** @var FactoryWorkerInterface $Worker */
         $Worker = $this->buildWithConstructorParameters($className, $namespace, $this->buildParameterCollection([
             $this
         ]));

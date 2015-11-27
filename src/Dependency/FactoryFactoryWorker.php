@@ -11,16 +11,29 @@ namespace Everon\Component\Factory\Dependency;
 
 use Everon\Component\Factory\FactoryFactoryWorkerInterface;
 
-interface FactoryWorkerDependencyInterface
+trait FactoryFactoryWorker
 {
+
+    /**
+     * @var FactoryFactoryWorkerInterface
+     */
+    protected $FactoryFactoryWorker;
+
+
     /**
      * @return FactoryFactoryWorkerInterface
      */
-    public function getFactoryFactoryWorker();
+    public function getFactoryFactoryWorker()
+    {
+        return $this->FactoryFactoryWorker;
+    }
 
     /**
      * @param FactoryFactoryWorkerInterface $FactoryFactoryWorker
      */
-    public function setFactoryFactoryWorker(FactoryFactoryWorkerInterface $FactoryFactoryWorker);
+    public function setFactoryFactoryWorker(FactoryFactoryWorkerInterface $FactoryFactoryWorker)
+    {
+        $this->FactoryFactoryWorker = $FactoryFactoryWorker;
+    }
 
 }
