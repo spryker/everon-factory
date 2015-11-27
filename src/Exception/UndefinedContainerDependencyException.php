@@ -13,5 +13,7 @@ use Everon\Component\Utils\Exception\AbstractException;
 
 class UndefinedContainerDependencyException extends AbstractException
 {
+
     protected $message = 'Undefined container dependency "%s"';
+
 }

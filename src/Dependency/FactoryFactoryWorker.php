@@ -19,7 +19,6 @@ trait FactoryFactoryWorker
      */
     protected $FactoryFactoryWorker;
 
-
     /**
      * @return FactoryFactoryWorkerInterface
      */

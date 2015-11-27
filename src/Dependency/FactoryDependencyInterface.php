@@ -13,6 +13,7 @@ use Everon\Component\Factory\FactoryInterface;
 
 interface FactoryDependencyInterface
 {
+
     /**
      * @return FactoryInterface
      */

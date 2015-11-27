@@ -13,5 +13,7 @@ use Everon\Component\Utils\Exception\AbstractException;
 
 class MissingFactoryDependencyInterfaceException extends AbstractException
 {
+
     protected $message = 'FactoryDependencyInterface is not implemented in "%s"';
+
 }

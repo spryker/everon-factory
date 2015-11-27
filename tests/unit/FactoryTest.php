@@ -19,17 +19,17 @@ use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 
 class FactoryTest extends MockeryTest
 {
+
     /**
      * @var FactoryStub
      */
     protected $Factory;
 
-
     protected function setUp()
     {
         $Container = Mockery::mock('Everon\Component\Factory\Dependency\ContainerInterface');
 
-        /** @var ContainerInterface $Container */
+        /* @var ContainerInterface $Container */
         $this->Factory = new Factory($Container);
     }
 
@@ -91,8 +91,8 @@ class FactoryTest extends MockeryTest
         $CollectionParameters->shouldReceive('toArray')->times(1)->andReturn([
             $LoggerStub,
             'argument', [
-                'some' => 'data'
-            ]
+                'some' => 'data',
+            ],
         ]);
 
         /** @var MockInterface $Container */
@@ -103,9 +103,10 @@ class FactoryTest extends MockeryTest
             ->with('Everon\Component\Factory\Tests\Unit\Doubles\BarStub')
             ->andReturn(false);
 
-        /** @var CollectionInterface $CollectionParameters */
+        /* @var CollectionInterface $CollectionParameters */
         $BarStub = $this->Factory->buildWithConstructorParameters('BarStub', 'Everon\Component\Factory\Tests\Unit\Doubles', $CollectionParameters);
 
         $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $BarStub);
     }
+
 }

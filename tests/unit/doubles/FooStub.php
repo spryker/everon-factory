@@ -9,14 +9,12 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
-use Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
-
 class FooStub
 {
+
     use Dependency\Setter\Bar;
 
     protected $timeStamp = null;
-
 
     public function __construct()
     {
@@ -30,4 +28,5 @@ class FooStub
     {
         return $this->getBar()->getLogger();
     }
+
 }

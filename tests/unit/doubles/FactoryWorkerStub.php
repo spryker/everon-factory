@@ -13,13 +13,14 @@ use Everon\Component\Factory\AbstractWorker;
 
 class FactoryWorkerStub extends AbstractWorker
 {
+
     /**
      * @inheritdoc
      */
     protected function registerBeforeWork()
     {
         $Factory = $this->getFactory();
-        $this->getFactory()->getDependencyContainer()->register('FactoryWorkerStubFac', function() use ($Factory) {
+        $this->getFactory()->getDependencyContainer()->register('FactoryWorkerStubFac', function () use ($Factory) {
             return $Factory->getWorkerByName('FactoryWorkerStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
         });
     }
@@ -32,6 +33,7 @@ class FactoryWorkerStub extends AbstractWorker
     public function buildFuzz($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
     {
         $FooStub = $this->buildFoo($namespace);
+
         return $this->getFactory()->buildWithConstructorParameters('FuzzStub', $namespace, $this->getFactory()->buildParameterCollection([
             $FooStub,
         ]));
@@ -56,11 +58,12 @@ class FactoryWorkerStub extends AbstractWorker
     {
         //$LoggerStub = $this->getFactory()->buildWithEmptyConstructor('LoggerStub', $namespace);
         $LoggerStub = $this->getFactory()->getDependencyContainer()->resolve('Logger');
+
         return $this->getFactory()->buildWithConstructorParameters('BarStub', $namespace,
             $this->getFactory()->buildParameterCollection([
                 $LoggerStub,
                 $anotherArgument,
-                $data
+                $data,
             ])
         );
     }

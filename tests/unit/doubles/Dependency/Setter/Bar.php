@@ -13,5 +13,7 @@ use Everon\Component\Factory\Tests\Unit\Doubles\Dependency;
 
 trait Bar
 {
+
     use Dependency\Bar;
+
 }

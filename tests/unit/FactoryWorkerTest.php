@@ -18,6 +18,7 @@ use Mockery\MockInterface;
 
 class FactoryWorkerTest extends MockeryTest
 {
+
     /**
      * @var FactoryWorkerStub
      */
@@ -89,4 +90,5 @@ class FactoryWorkerTest extends MockeryTest
 
         $this->assertInstanceOf(get_class($BarStub), $BarStubMock);
     }
+
 }

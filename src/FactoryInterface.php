@@ -9,7 +9,6 @@
  */
 namespace Everon\Component\Factory;
 
-
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Exception\InstanceIsAbstractClassException;
@@ -42,6 +41,7 @@ interface FactoryInterface
      *
      * @throws MissingFactoryDependencyInterfaceException
      * @throws UndefinedClassException
+     *
      * @return object
      */
     public function buildWithEmptyConstructor($class_name, $namespace);
@@ -53,6 +53,7 @@ interface FactoryInterface
      *
      * @throws MissingFactoryDependencyInterfaceException
      * @throws UndefinedClassException
+     *
      * @return object
      */
     public function buildWithConstructorParameters($class_name, $namespace, CollectionInterface $parameterCollection);
@@ -81,6 +82,7 @@ interface FactoryInterface
      * @param $class
      *
      * @throws UndefinedClassException
+     *
      * @return void
      */
     public function classExists($class);
@@ -98,6 +100,7 @@ interface FactoryInterface
      *
      * @throws InstanceIsAbstractClassException
      * @throws UnableToInstantiateException
+     *
      * @return FactoryWorkerInterface
      */
     public function getWorkerByName($name, $namespace='Everon\Component\Factory');

@@ -31,7 +31,6 @@ class Factory implements FactoryInterface
      */
     protected static $WorkerCollection;
 
-
     /**
      * @param ContainerInterface $Container
      */
@@ -64,6 +63,7 @@ class Factory implements FactoryInterface
      * @param object $Instance
      *
      * @throws MissingFactoryDependencyInterfaceException
+     *
      * @return void
      */
     protected function injectFactoryWhenRequired($class_name, $Instance)
@@ -72,7 +72,7 @@ class Factory implements FactoryInterface
             if (($Instance instanceof FactoryDependencyInterface) === false) {
                 throw new MissingFactoryDependencyInterfaceException($class_name);
             }
-            /** @var FactoryDependencyInterface $Instance */
+            /* @var FactoryDependencyInterface $Instance */
             $Instance->setFactory($this);
         }
     }
@@ -178,7 +178,7 @@ class Factory implements FactoryInterface
 
         /** @var FactoryWorkerInterface $Worker */
         $Worker = $this->buildWithConstructorParameters($className, $namespace, $this->buildParameterCollection([
-            $this
+            $this,
         ]));
 
         $Worker->doWork();

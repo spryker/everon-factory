@@ -13,5 +13,7 @@ use Everon\Component\Utils\Exception\AbstractException;
 
 class UnableToInstantiateException extends AbstractException
 {
+
     protected $message = 'Class "%s" is not instantiable';
+
 }

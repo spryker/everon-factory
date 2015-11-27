@@ -13,6 +13,7 @@ use Everon\Component\Factory\Tests\Unit\Doubles\BarStub;
 
 trait Bar
 {
+
     /**
      * @var BarStub
      */

@@ -13,5 +13,7 @@ use Everon\Component\Utils\Exception\AbstractException;
 
 class DependencyServiceAlreadyRegisteredException extends AbstractException
 {
+
     protected $message = 'Dependency service "%s" is already registered';
+
 }

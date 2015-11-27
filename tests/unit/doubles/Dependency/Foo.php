@@ -13,6 +13,7 @@ use Everon\Component\Factory\Tests\Unit\Doubles\FooStub;
 
 trait Foo
 {
+
     /**
      * @var FooStub
      */

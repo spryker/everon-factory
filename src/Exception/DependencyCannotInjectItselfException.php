@@ -13,5 +13,7 @@ use Everon\Component\Utils\Exception\AbstractException;
 
 class DependencyCannotInjectItselfException extends AbstractException
 {
+
     protected $message = 'Dependency "%s" cannot inject itself into itself';
+
 }

@@ -13,5 +13,7 @@ use Everon\Component\Utils\Exception\AbstractException;
 
 class InstanceIsNotObjectException extends AbstractException
 {
+
     protected $message = 'Instance is not object';
+
 }

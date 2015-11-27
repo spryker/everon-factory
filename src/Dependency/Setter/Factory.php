@@ -11,5 +11,7 @@ namespace Everon\Component\Factory\Dependency\Setter;
 
 trait Factory
 {
+
     use \Everon\Component\Factory\Dependency\Factory;
+
 }

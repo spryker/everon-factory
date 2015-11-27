@@ -13,6 +13,7 @@ use Everon\Component\Factory\Factory;
 
 class FactoryStub extends Factory
 {
+
     /**
      * @param string $namespace
      *
@@ -45,7 +46,7 @@ class FactoryStub extends Factory
         return $this->buildWithConstructorParameters('BarStub', $namespace, $this->buildParameterCollection([
             $LoggerStub,
             $anotherArgument,
-            $data
+            $data,
         ]));
     }
 
@@ -53,4 +54,5 @@ class FactoryStub extends Factory
     {
         return $this->buildWithEmptyConstructor('LoggerStub', $namespace);
     }
+
 }

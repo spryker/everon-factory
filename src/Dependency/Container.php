@@ -21,6 +21,7 @@ use Everon\Component\Utils\Text\LastTokenToName;
 
 class Container implements ContainerInterface
 {
+
     use EndsWith;
     use LastTokenToName;
 
@@ -52,24 +53,24 @@ class Container implements ContainerInterface
      */
     protected $InjectedCollection;
 
-
     /**
      * @param $setter_name
      * @param $Receiver
      *
      * @throws UndefinedContainerDependencyException
      * @throws UndefinedDependencySetterException
+     *
      * @internal param $dependency_name
      */
     protected function injectSetterDependency($setter_name, $Receiver)
     {
         $receiverClassName = get_class($Receiver);
-        $method = 'set'.$setter_name; //eg. setConfigManager
+        $method = 'set' . $setter_name; //eg. setConfigManager
         if (method_exists($Receiver, $method) === false) {
             throw new UndefinedDependencySetterException([
                 $method,
                 $setter_name,
-                $receiverClassName
+                $receiverClassName,
             ]);
         }
 
@@ -82,6 +83,7 @@ class Container implements ContainerInterface
     /**
      * @param $class_name
      * @param bool $autoload
+     *
      * @return array
      */
     protected function getClassDependencies($class_name, $autoload = true)

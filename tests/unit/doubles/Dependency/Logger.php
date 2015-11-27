@@ -13,6 +13,7 @@ use Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub;
 
 trait Logger
 {
+
     /**
      * @var LoggerStub
      */

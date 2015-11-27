@@ -9,11 +9,10 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
-
 class BarStub
 {
-    use Dependency\Logger;
 
+    use Dependency\Logger;
 
     /**
      * @var string
@@ -24,7 +23,6 @@ class BarStub
      * @var array
      */
     protected $data = [];
-
 
     /**
      * BarStub constructor.

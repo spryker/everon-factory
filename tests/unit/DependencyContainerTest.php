@@ -15,7 +15,6 @@ use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FooStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub;
 use Everon\Component\Utils\TestCase\MockeryTest;
-use Mockery;
 
 class DependencyContainerTest extends MockeryTest
 {
@@ -46,6 +45,7 @@ class DependencyContainerTest extends MockeryTest
             //requires constructor injection of Foo, see FooStub
             //creates always new instance of Foo
             $FooStub = $Factory->buildFoo();
+
             return $Factory->buildFuzz($FooStub);
         });
 
@@ -59,6 +59,7 @@ class DependencyContainerTest extends MockeryTest
             //requires constructor injection of $Logger, see BarStub
             //uses same Logger instance
             $Logger = $Factory->getDependencyContainer()->resolve('Logger');
+
             return $Factory->buildBar($Logger, 'argument', [
                 'some' => 'data',
             ]);
@@ -115,7 +116,6 @@ class DependencyContainerTest extends MockeryTest
         $this->assertEquals($FooStub, $Fuzz->getFoo());
     }
 
-
     /**
      * @expectedException \Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException
      * @expectedExceptionMessage Dependency service "Fuzz" is already registered
@@ -126,6 +126,7 @@ class DependencyContainerTest extends MockeryTest
 
         $this->Container->register('Fuzz', function () use ($Factory) {
             $FooStub = $Factory->buildFoo();
+
             return $Factory->buildFuzz($FooStub);
         });
     }

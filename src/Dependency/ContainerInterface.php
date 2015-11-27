@@ -15,6 +15,7 @@ use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
 
 interface ContainerInterface
 {
+
     /**
      * @param string $receiver_class_name
      * @param object $ReceiverInstance
@@ -43,6 +44,7 @@ interface ContainerInterface
      * @param \Closure $ServiceClosure
      *
      * @throws DependencyServiceAlreadyRegisteredException
+     *
      * @return void
      */
     public function register($name, \Closure $ServiceClosure);
@@ -59,6 +61,7 @@ interface ContainerInterface
      * @param $name
      *
      * @throws UndefinedContainerDependencyException
+     *
      * @return mixed
      */
     public function resolve($name);
@@ -101,4 +104,5 @@ interface ContainerInterface
      * @return CollectionInterface
      */
     public function getInjectedCollection();
+
 }

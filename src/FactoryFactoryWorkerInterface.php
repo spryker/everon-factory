@@ -9,8 +9,6 @@
  */
 namespace Everon\Component\Factory;
 
-
 interface FactoryFactoryWorkerInterface extends FactoryWorkerInterface
 {
-
 }

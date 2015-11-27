@@ -13,5 +13,7 @@ use Everon\Component\Utils\Exception\AbstractException;
 
 class UndefinedDependencySetterException extends AbstractException
 {
+
     protected $message = 'Required dependency setter "%s(%s)" is missing in "%s"';
+
 }

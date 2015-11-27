@@ -13,5 +13,7 @@ use Everon\Component\Utils\Exception\AbstractException;
 
 class UndefinedClassException extends AbstractException
 {
+
     protected $message = 'Undefined class "%s"';
+
 }

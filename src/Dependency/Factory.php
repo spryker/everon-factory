@@ -19,7 +19,6 @@ trait Factory
      */
     protected $Factory;
 
-
     /**
      * @return FactoryInterface
      */
