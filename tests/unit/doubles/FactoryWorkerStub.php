@@ -14,6 +14,17 @@ use Everon\Component\Factory\AbstractWorker;
 class FactoryWorkerStub extends AbstractWorker
 {
     /**
+     * @inheritdoc
+     */
+    protected function registerBeforeWork()
+    {
+        $Factory = $this->getFactory();
+        $this->getFactory()->getDependencyContainer()->register('FactoryWorkerStub', function() use ($Factory) {
+            return $Factory->getWorkerByName('FactoryWorkerStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+        });
+    }
+
+    /**
      * @param string $namespace
      *
      * @return FuzzStub

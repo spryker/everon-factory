@@ -24,12 +24,12 @@ class Factory implements FactoryInterface
     /**
      * @var ContainerInterface
      */
-    protected $DependencyContainer;
+    protected static $DependencyContainer;
 
     /**
-     * @var FactoryWorkerInterface[]
+     * @var FactoryWorkerInterface[]|CollectionInterface
      */
-    protected $WorkerCollection;
+    protected static $WorkerCollection;
 
 
     /**
@@ -37,8 +37,8 @@ class Factory implements FactoryInterface
      */
     public function __construct(ContainerInterface $Container)
     {
-        $this->DependencyContainer = $Container;
-        $this->WorkerCollection = new Collection([]);
+        static::$DependencyContainer = $Container;
+        static::$WorkerCollection = new Collection([]);
     }
 
     /**
@@ -46,14 +46,8 @@ class Factory implements FactoryInterface
      */
     public function injectDependencies($class_name, $Instance)
     {
+        $this->injectFactoryWhenRequired($class_name, $Instance);
         $this->getDependencyContainer()->inject($class_name, $Instance);
-        if ($this->getDependencyContainer()->isFactoryRequired($class_name)) {
-            if (($Instance instanceof FactoryDependencyInterface) === false) {
-                throw new MissingFactoryDependencyInterfaceException($class_name);
-            }
-            /** @var FactoryDependencyInterface $Instance */
-            $Instance->setFactory($this);
-        }
     }
 
     /**
@@ -61,7 +55,19 @@ class Factory implements FactoryInterface
      */
     public function injectDependenciesOnce($class_name, $Instance)
     {
+        $this->injectFactoryWhenRequired($class_name, $Instance);
         $this->getDependencyContainer()->injectOnce($class_name, $Instance);
+    }
+
+    /**
+     * @param $class_name
+     * @param object $Instance
+     *
+     * @throws MissingFactoryDependencyInterfaceException
+     * @return void
+     */
+    protected function injectFactoryWhenRequired($class_name, $Instance)
+    {
         if ($this->getDependencyContainer()->isFactoryRequired($class_name)) {
             if (($Instance instanceof FactoryDependencyInterface) === false) {
                 throw new MissingFactoryDependencyInterfaceException($class_name);
@@ -118,7 +124,7 @@ class Factory implements FactoryInterface
      */
     public function getDependencyContainer()
     {
-        return $this->DependencyContainer;
+        return static::$DependencyContainer;
     }
 
     /**
@@ -126,7 +132,7 @@ class Factory implements FactoryInterface
      */
     public function setDependencyContainer(ContainerInterface $Container)
     {
-        $this->DependencyContainer = $Container;
+        static::$DependencyContainer = $Container;
     }
 
     /**
@@ -152,9 +158,7 @@ class Factory implements FactoryInterface
     }
 
     /**
-     * @param array $parameters
-     *
-     * @return CollectionInterface
+     * @inheritdoc
      */
     public function buildParameterCollection(array $parameters)
     {
@@ -162,25 +166,23 @@ class Factory implements FactoryInterface
     }
 
     /**
-     * @param $name
-     *
-     * @return FactoryWorkerInterface
+     * @inheritdoc
      */
     public function getWorkerByName($name, $namespace='Everon\Component\Factory')
     {
         $className = sprintf('%sFactoryWorker', $name);
 
-        if ($this->WorkerCollection->has($className)) {
-            return $this->WorkerCollection->get($className);
+        if (static::$WorkerCollection->has($className)) {
+            return static::$WorkerCollection->get($className);
         }
 
         $Worker = $this->buildWithConstructorParameters($className, $namespace, $this->buildParameterCollection([
             $this
         ]));
 
-        $this->WorkerCollection->set($name, $Worker);
+        static::$WorkerCollection->set($name, $Worker);
 
-        return $this->WorkerCollection->get($name);
+        return static::$WorkerCollection->get($name);
     }
 
 }

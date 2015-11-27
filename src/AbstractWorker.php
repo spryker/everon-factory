@@ -13,6 +13,11 @@ namespace Everon\Component\Factory;
 abstract class AbstractWorker implements FactoryWorkerInterface
 {
     use Dependency\Factory;
+
+    /**
+     * @return void
+     */
+    protected abstract function registerBeforeWork();
     
     public function __construct(FactoryInterface $Factory)
     {

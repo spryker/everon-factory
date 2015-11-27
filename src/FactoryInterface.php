@@ -12,7 +12,9 @@ namespace Everon\Component\Factory;
 
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
+use Everon\Component\Factory\Exception\InstanceIsAbstractClassException;
 use Everon\Component\Factory\Exception\MissingFactoryDependencyInterfaceException;
+use Everon\Component\Factory\Exception\UnableToInstantiateException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 
 interface FactoryInterface
@@ -92,9 +94,12 @@ interface FactoryInterface
 
     /**
      * @param $name
+     * @param string $namespace
      *
+     * @throws InstanceIsAbstractClassException
+     * @throws UnableToInstantiateException
      * @return FactoryWorkerInterface
      */
-    public function getWorkerByName($name);
+    public function getWorkerByName($name, $namespace='Everon\Component\Factory');
 
 }
