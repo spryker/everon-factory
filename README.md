@@ -177,5 +177,5 @@ $FactoryWorker = $Factory->getWorkerByName('MyApplicationWorker', 'MyApplication
 ```
 
 ## Test Driven
-See [tests](https://github.com/oliwierptak/everon-factory/blob/development/tests/unit/DependencyContainerTest.php)
+See [tests](https://github.com/oliwierptak/everon-factory/blob/development/tests/unit/)
 for [more examples with trait dependencies](https://github.com/oliwierptak/everon-factory/tree/development/tests/unit/doubles/Dependency).
