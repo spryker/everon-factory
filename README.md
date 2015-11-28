@@ -80,22 +80,6 @@ $Container->register('Logger', function () use ($FactoryWorker) {
 });
 ```
 
-### Resolve with Dependency Container
-Use ```resolve``` to receive dependency defined earlier with ```register``` or ```propose```.
-So you can pass the same instance to another class via constructor injection.
-Or you could just call ```$FactoryWorker->buildLogger()``` if you decided that every ```Bar``` instance should get
-new instance of ```Logger``` class.
-
-
-```php
-$Container->register('Bar', function () use ($FactoryWorker) {
-    $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
-    return $FactoryWorker->buildBar($Logger, 'argument', [
-        'some' => 'data',
-    ]);
-});
-```
-
 ### Define the trait
 Example of ```Logger``` dependency trait, which is reused between all of the classes that had ```Logger``` injected as dependency.
 The only thing to remember is that, the name of the trait should be the same,
@@ -143,6 +127,23 @@ interface LoggerDependencyInterface
     public function setLogger(LoggerInterface $Logger);
 }
 ```
+
+### Resolve with Dependency Container
+Use ```resolve``` to receive dependency defined earlier with ```register``` or ```propose```.
+So you can pass the same instance to another class via constructor injection.
+Or you could just call ```$FactoryWorker->buildLogger()``` if you decided that every ```Bar``` instance should get
+new instance of ```Logger``` class.
+
+
+```php
+$Container->register('Bar', function () use ($FactoryWorker) {
+    $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
+    return $FactoryWorker->buildBar($Logger, 'argument', [
+        'some' => 'data',
+    ]);
+});
+```
+
 
 ### Create Dependency Container, Factory and FactoryWorker
 Instantiate new ```Dependency Container``` and assign it to ```Factory```.
