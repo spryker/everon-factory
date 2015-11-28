@@ -99,7 +99,7 @@ $Container->register('Bar', function () use ($FactoryWorker) {
 ### Define the trait
 Example of ```Logger``` dependency trait, which is reused between all of the classes that had ```Logger``` injected as dependency.
 The only thing to remember is that, the name of the trait should be the same,
-as the name under which the dependency has been registered with the ```Dependency Container```.
+as the name under which the dependency was registered with the ```Dependency Container```.
 
 
 ```php
