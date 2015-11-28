@@ -35,29 +35,31 @@ class DependencyContainerTest extends MockeryTest
         $this->Factory = new FactoryStub($this->Container);
         $Factory = $this->Factory;
 
-        //everything used with resolve() must be registered with register
+        /* Everything used with resolve() must be registered with register() or propose() */
 
         $this->Container->register('Logger', function () use ($Factory) {
             return $Factory->buildLogger();
         });
 
         $this->Container->register('Fuzz', function () use ($Factory) {
-            //requires constructor injection of Foo, see FooStub
-            //creates always new instance of Foo
-            $FooStub = $Factory->buildFoo();
+            /* FuzzStub requires constructor injection of Foo
+                creates always new instance of Foo */
 
+            $FooStub = $Factory->buildFoo();
             return $Factory->buildFuzz($FooStub);
         });
 
         $this->Container->register('Foo', function () use ($Factory) {
-            //requires setter injection of Bar, see FooStub
-            //Bar requires constructor injection of Logger
+            /* FooStub requires setter injection of Bar
+                Bar requires constructor injection of Logger */
+
             return $Factory->buildFoo();
         });
 
         $this->Container->register('Bar', function () use ($Factory) {
-            //requires constructor injection of $Logger, see BarStub
-            //uses same Logger instance
+            /* BarStub requires constructor injection of $Logger
+                uses same Logger instance that would be injected via setter injection */
+
             $Logger = $Factory->getDependencyContainer()->resolve('Logger');
 
             return $Factory->buildBar($Logger, 'argument', [

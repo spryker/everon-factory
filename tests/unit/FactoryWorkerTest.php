@@ -47,9 +47,9 @@ class FactoryWorkerTest extends MockeryTest
         $this->assertInstanceOf(get_class($LoggerStub), $LoggerMock);
     }
 
-    public function test_build_with_constructor_parameters()
+    public function test_build_with_same_instance_of_logger()
     {
-        $BarStubMock = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\BarzStub');
+        $BarStubMock = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\BarStub');
         $LoggerStub = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub');
         $CollectionParameters = Mockery::mock('Everon\Component\Collection\CollectionInterface');
 
