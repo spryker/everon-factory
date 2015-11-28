@@ -178,7 +178,7 @@ $FactoryWorker = $Factory->getWorkerByName('MyApplicationWorker', 'MyApplication
 
 ### What's the best way to inject dependencies?
 Use constructor for dependencies that are part of what the class is doing, and use setters/getters for infrastructure type dependencies.
-In general, a ```Logger``` or ```FactoryWorker``` could be good example of infrastructure type dependency.
+In general, a ```Logger``` or ```FactoryWorker``` could be good examples of infrastructure type dependencies.
 
 ## Test Driven
 See [tests](https://github.com/oliwierptak/everon-factory/blob/development/tests/unit/)
