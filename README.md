@@ -131,8 +131,6 @@ interface LoggerDependencyInterface
 ### Resolve with Dependency Container
 Use ```resolve``` to receive dependency defined earlier with ```register``` or ```propose```.
 So you can pass the same instance to another class via constructor injection.
-Or you could just call ```$FactoryWorker->buildLogger()``` if you decided that every ```Bar``` instance should get
-new instance of ```Logger``` class.
 
 
 ```php
