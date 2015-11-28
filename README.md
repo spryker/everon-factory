@@ -40,6 +40,94 @@ class Foo
 }
 ```
 
+### Register with Dependency Container
+Use ```register``` method to register Logger dependency under ```Logger``` name.
+
+```php
+$Container->register('Logger', function () use ($FactoryWorker) {
+    return $FactoryWorker->buildLogger();
+});
+```
+
+### Define the traits and interface
+Example of ```Logger``` dependency trait, which is reused between all of the classes that use ```Dependency\Setter\Logger``` trait.
+The only thing to remember is that, the name of the trait should be the same,
+as the name under which the dependency was registered with the ```Dependency Container```.
+
+
+```php
+trait Logger
+{
+    /**
+     * @var LoggerInterface
+     */
+    protected $Logger;
+
+    /**
+     * @inheritdoc
+     */
+    public function getLogger()
+    {
+        return $this->Logger;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setLogger(LoggerInterface $Logger)
+    {
+        $this->Logger = $Logger;
+    }
+}
+```
+
+You can also define and assign the ```LoggerAwareInterface``` too all classes that are being injected with ```Logger``` instance.
+```php
+interface LoggerAwareInterface
+{
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger();
+
+    /**
+     * @param Logger LoggerInterface
+     */
+    public function setLogger(LoggerInterface $Logger);
+}
+```
+
+Define the setter injection trait.
+The only requirement is that the name ends with ```Dependency\Setter\<dependency name>```.
+You can reuse already defined ```Dependency\Logger``` trait, in every class that implements LoggerAwareInterface.
+
+
+```php
+namespace MyApplication\Modules\Logger\Dependency\Setter;
+
+use MyApplication\Modules\Logger\Dependency;
+
+trait Logger
+{
+    use Dependency\Logger;
+}
+```
+
+
+### Resolve with Dependency Container
+Use ```resolve``` to receive dependency defined earlier with ```register``` or ```propose```.
+So you can pass the same instance to another class via constructor injection.
+
+
+```php
+$Container->register('UserManager', function () use ($FactoryWorker) {
+    $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
+    return $FactoryWorker->buildUserManager($Logger, 'argument', [
+        'some' => 'data',
+    ]);
+});
+```
+
 ### Build with FactoryWorker
 To build your dependencies use the ```FactoryWorker``` classes.
 
@@ -85,107 +173,24 @@ class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorker
         ]));
     }
 }
-
-```
-
-### Register with Dependency Container
-Use ```register``` method to register Logger dependency under ```Logger``` name.
-
-```php
-$Container->register('Logger', function () use ($FactoryWorker) {
-    return $FactoryWorker->buildLogger();
-});
-```
-
-### Define the traits and interface
-Example of ```Logger``` dependency trait, which is reused between all of the classes that use ```Dependency\Setter\Logger``` trait.
-The only thing to remember is that, the name of the trait should be the same,
-as the name under which the dependency was registered with the ```Dependency Container```.
-
-
-```php
-trait Logger
-{
-    /**
-     * @var LoggerInterface
-     */
-    protected $Logger;
-
-    /**
-     * @inheritdoc
-     */
-    public function getLogger()
-    {
-        return $this->Logger;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setLogger(LoggerInterface $Logger)
-    {
-        $this->Logger = $Logger;
-    }
-}
-```
-
-You can also define and assign the ```LoggerDependencyInterface``` too all classes that are being injected with ```Logger``` instance.
-```php
-interface LoggerDependencyInterface
-{
-    /**
-     * @return LoggerInterface
-     */
-    public function getLogger();
-
-    /**
-     * @param Logger LoggerInterface
-     */
-    public function setLogger(LoggerInterface $Logger);
-}
-```
-
-Define the setter injection trait.
-The only requirement is that the name ends with ```Dependency\Setter\<dependency name>```.
-You can reuse already defined ```Dependency\Logger``` trait for the setters and getters implementation.
-
-```php
-namespace MyApplication\Modules\Logger\Dependency\Setter;
-
-use MyApplication\Modules\Logger\Dependency;
-
-trait Logger
-{
-    use Dependency\Logger;
-}
-```
-
-
-### Resolve with Dependency Container
-Use ```resolve``` to receive dependency defined earlier with ```register``` or ```propose```.
-So you can pass the same instance to another class via constructor injection.
-
-
-```php
-$Container->register('UserManager', function () use ($FactoryWorker) {
-    $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
-    return $FactoryWorker->buildUserManager($Logger, 'argument', [
-        'some' => 'data',
-    ]);
-});
 ```
 
 ### Result
 Every ```UserManager``` class will be injected with ```Logger``` instance, that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.
-
 ```php
 $UserManager->getLogger()->log('It works');
+```
+
+To reuse same instance of ```Logger``` dependency in another class, only one line is needed.
+```php
+use Dependency\Setter\Logger;
 ```
 
 
 ### Dependency Container, Factory and FactoryWorker
 Instantiate new ```Dependency Container``` and assign it to ```Factory```.
 Use ```Factory``` to get instance of your specific ```FactoryWorker```.
+
 
 ```php
 $Container = new Dependency\Container();
