@@ -182,4 +182,4 @@ In general, a ```Logger``` or ```FactoryWorker``` could be good examples of infr
 
 ## Test Driven
 See [tests](https://github.com/oliwierptak/everon-factory/blob/development/tests/unit/)
-for [more examples with trait dependencies](https://github.com/oliwierptak/everon-factory/tree/development/tests/unit/doubles/Dependency).
+for [more examples with trait dependencies](https://github.com/oliwierptak/everon-factory/tree/development/tests/unit/doubles/).
