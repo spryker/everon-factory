@@ -145,7 +145,7 @@ $Container->register('Bar', function () use ($FactoryWorker) {
 
 ### Create Dependency Container, Factory and FactoryWorker
 Instantiate new ```Dependency Container``` and assign it to ```Factory```.
-Use ```Factory``` to get instance of your application or module with specific ```FactoryWorker```.
+Use ```Factory``` to get instance of your specific ```FactoryWorker```.
 
 ```php
 $Container = new Dependency\Container();
