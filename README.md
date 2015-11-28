@@ -18,7 +18,7 @@ Library to handle dependency injection and instantiation. Allows to produce code
 * Convention over configuration
 * Clean code
 
-## How it works, what value does it provide
+## How it works
 Every instantiation should happen only inside of the ```FactoryWorker``` class.
 What it means, is that almost every usage of ```new``` operator should happen there.
 It's easy to implement and manage, because injection is cheap and dependency setup happens in one place.
