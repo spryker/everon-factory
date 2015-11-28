@@ -45,7 +45,7 @@ To build your dependencies use the ```FactoryWorker``` classes.
 
 
 ```php
-class MyApplicationFactoryWorker extends AbstractWorker implements FactoryFactoryWorkerInterface
+class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorkerInterface
 {
     /**
      * @inheritdoc

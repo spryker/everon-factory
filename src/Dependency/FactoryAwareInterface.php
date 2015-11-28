@@ -11,7 +11,7 @@ namespace Everon\Component\Factory\Dependency;
 
 use Everon\Component\Factory\FactoryInterface;
 
-interface FactoryDependencyInterface
+interface FactoryAwareInterface
 {
 
     /**

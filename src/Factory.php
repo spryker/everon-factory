@@ -12,9 +12,9 @@ namespace Everon\Component\Factory;
 use Everon\Component\Collection\Collection;
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
-use Everon\Component\Factory\Dependency\FactoryDependencyInterface;
+use Everon\Component\Factory\Dependency\FactoryAwareInterface;
 use Everon\Component\Factory\Exception\InstanceIsAbstractClassException;
-use Everon\Component\Factory\Exception\MissingFactoryDependencyInterfaceException;
+use Everon\Component\Factory\Exception\MissingFactoryAwareInterfaceException;
 use Everon\Component\Factory\Exception\UnableToInstantiateException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 
@@ -62,17 +62,17 @@ class Factory implements FactoryInterface
      * @param $class_name
      * @param object $Instance
      *
-     * @throws MissingFactoryDependencyInterfaceException
+     * @throws MissingFactoryAwareInterfaceException
      *
      * @return void
      */
     protected function injectFactoryWhenRequired($class_name, $Instance)
     {
         if ($this->getDependencyContainer()->isFactoryRequired($class_name)) {
-            if (($Instance instanceof FactoryDependencyInterface) === false) {
-                throw new MissingFactoryDependencyInterfaceException($class_name);
+            if (($Instance instanceof FactoryAwareInterface) === false) {
+                throw new MissingFactoryAwareInterfaceException($class_name);
             }
-            /* @var FactoryDependencyInterface $Instance */
+            /* @var FactoryAwareInterface $Instance */
             $Instance->setFactory($this);
         }
     }

@@ -12,7 +12,7 @@ namespace Everon\Component\Factory;
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Exception\InstanceIsAbstractClassException;
-use Everon\Component\Factory\Exception\MissingFactoryDependencyInterfaceException;
+use Everon\Component\Factory\Exception\MissingFactoryAwareInterfaceException;
 use Everon\Component\Factory\Exception\UnableToInstantiateException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 
@@ -39,7 +39,7 @@ interface FactoryInterface
      * @param $class_name
      * @param $namespace
      *
-     * @throws MissingFactoryDependencyInterfaceException
+     * @throws MissingFactoryAwareInterfaceException
      * @throws UndefinedClassException
      *
      * @return object
@@ -51,7 +51,7 @@ interface FactoryInterface
      * @param $namespace
      * @param CollectionInterface $parameterCollection
      *
-     * @throws MissingFactoryDependencyInterfaceException
+     * @throws MissingFactoryAwareInterfaceException
      * @throws UndefinedClassException
      *
      * @return object

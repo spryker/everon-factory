@@ -36,7 +36,7 @@ class FactoryTest extends MockeryTest
     public function test_inject_dependencies_and_require_factory()
     {
         $Fuzz = Mockery::mock(
-            'Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub, Everon\Component\Factory\Dependency\FactoryDependencyInterface'
+            'Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub, Everon\Component\Factory\Dependency\FactoryAwareInterface'
         );
 
         $Fuzz->shouldReceive('setFactory')->times(1)->with($this->Factory);

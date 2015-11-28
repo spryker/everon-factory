@@ -9,9 +9,9 @@
  */
 namespace Everon\Component\Factory;
 
-use Everon\Component\Factory\Dependency\FactoryDependencyInterface;
+use Everon\Component\Factory\Dependency\FactoryAwareInterface;
 
-interface FactoryWorkerInterface extends FactoryDependencyInterface
+interface FactoryWorkerInterface extends FactoryAwareInterface
 {
 
     /**

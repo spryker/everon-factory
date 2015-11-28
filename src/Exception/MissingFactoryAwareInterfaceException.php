@@ -11,9 +11,9 @@ namespace Everon\Component\Factory\Exception;
 
 use Everon\Component\Utils\Exception\AbstractException;
 
-class MissingFactoryDependencyInterfaceException extends AbstractException
+class MissingFactoryAwareInterfaceException extends AbstractException
 {
 
-    protected $message = 'FactoryDependencyInterface is not implemented in "%s"';
+    protected $message = 'FactoryAwareInterface is not implemented in "%s"';
 
 }
