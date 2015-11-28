@@ -80,7 +80,7 @@ $Container->register('Logger', function () use ($FactoryWorker) {
 });
 ```
 
-### Define the trait
+### Define the traits and interfaces
 Example of ```Logger``` dependency trait, which is reused between all of the classes that had ```Logger``` injected as dependency.
 The only thing to remember is that, the name of the trait should be the same,
 as the name under which the dependency was registered with the ```Dependency Container```.
@@ -128,6 +128,22 @@ interface LoggerDependencyInterface
 }
 ```
 
+Define the setter injection trait.
+The only requirement is that the name ends with ```Dependency\Setter\<dependency name>```.
+You can reuse already defined ```Dependency\Logger``` trait for the setters and getters implementation.
+
+```php
+namespace MyApplication\Modules\Logger\Dependency\Setter;
+
+use MyApplication\Modules\Logger\Dependency;
+
+trait Logger
+{
+    use Dependency\Logger;
+}
+```
+
+
 ### Resolve with Dependency Container
 Use ```resolve``` to receive dependency defined earlier with ```register``` or ```propose```.
 So you can pass the same instance to another class via constructor injection.
@@ -142,8 +158,15 @@ $Container->register('Bar', function () use ($FactoryWorker) {
 });
 ```
 
+### Result
+Every ```Bar``` class will be injected with ```Logger``` instance, that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.
 
-### Create Dependency Container, Factory and FactoryWorker
+```php
+$Bar->getLogger()->log('It works');
+```
+
+
+### Dependency Container, Factory and FactoryWorker
 Instantiate new ```Dependency Container``` and assign it to ```Factory```.
 Use ```Factory``` to get instance of your specific ```FactoryWorker```.
 
@@ -154,4 +177,5 @@ $FactoryWorker = $Factory->getWorkerByName('MyApplicationWorker', 'MyApplication
 ```
 
 ## Test Driven
-See [DependencyContainerTest.php](https://github.com/oliwierptak/everon-factory/blob/development/tests/unit/DependencyContainerTest.php) for more examples.
+See [tests](https://github.com/oliwierptak/everon-factory/blob/development/tests/unit/DependencyContainerTest.php)
+for [more examples with trait dependencies](https://github.com/oliwierptak/everon-factory/tree/development/tests/unit/doubles/Dependency).
