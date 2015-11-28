@@ -65,7 +65,24 @@ class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorker
      */
     public function buildLogger($namespace = 'MyApplication\Modules\Logger')
     {
-        return $this->buildWithEmptyConstructor('Logger', $namespace);
+        return $this->getFactory()->buildWithEmptyConstructor('Logger', $namespace);
+    }
+
+    /**
+     * @param LoggerInterface $Logger
+     * @param string $anotherArgument
+     * @param array $data
+     * @param string $namespace
+     *
+     * @return UserManager
+     */
+    public function buildUserManager(LoggerInterface $Logger, $anotherArgument, array $data, $namespace = 'MyApplication\Modules\User')
+    {
+        return $this->getFactory()->buildWithConstructorParameters('UserManager', $namespace, $this->buildParameterCollection([
+            $Logger,
+            $anotherArgument,
+            $data,
+        ]));
     }
 }
 
@@ -80,8 +97,8 @@ $Container->register('Logger', function () use ($FactoryWorker) {
 });
 ```
 
-### Define the traits and interfaces
-Example of ```Logger``` dependency trait, which is reused between all of the classes that had ```Logger``` injected as dependency.
+### Define the traits and interface
+Example of ```Logger``` dependency trait, which is reused between all of the classes that use ```Dependency\Setter\Logger``` trait.
 The only thing to remember is that, the name of the trait should be the same,
 as the name under which the dependency was registered with the ```Dependency Container```.
 
@@ -150,19 +167,19 @@ So you can pass the same instance to another class via constructor injection.
 
 
 ```php
-$Container->register('Bar', function () use ($FactoryWorker) {
+$Container->register('UserManager', function () use ($FactoryWorker) {
     $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
-    return $FactoryWorker->buildBar($Logger, 'argument', [
+    return $FactoryWorker->buildUserManager($Logger, 'argument', [
         'some' => 'data',
     ]);
 });
 ```
 
 ### Result
-Every ```Bar``` class will be injected with ```Logger``` instance, that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.
+Every ```UserManager``` class will be injected with ```Logger``` instance, that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.
 
 ```php
-$Bar->getLogger()->log('It works');
+$UserManager->getLogger()->log('It works');
 ```
 
 
