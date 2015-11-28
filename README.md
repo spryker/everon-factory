@@ -96,10 +96,6 @@ $Container->register('Bar', function () use ($FactoryWorker) {
 });
 ```
 
-### Create Dependency Container, Factory and FactoryWorker
-Instantiate new ```Dependency Container``` and assign it to ```Factory```.
-Use ```Factory``` to get instance of your application or module with specific ```FactoryWorker```.
-
 ### Define the trait
 Example of ```Logger``` dependency trait, which is reused between all of the classes that had ```Logger``` injected as dependency.
 The only thing to remember is that, the name of the trait should be the same,
@@ -148,6 +144,9 @@ interface LoggerDependencyInterface
 }
 ```
 
+### Create Dependency Container, Factory and FactoryWorker
+Instantiate new ```Dependency Container``` and assign it to ```Factory```.
+Use ```Factory``` to get instance of your application or module with specific ```FactoryWorker```.
 
 ```php
 $Container = new Dependency\Container();
