@@ -86,6 +86,7 @@ So you can pass the same instance to another class via constructor injection.
 Or you could just call ```$FactoryWorker->buildLogger()``` if you decided that every ```Bar``` instance should get
 new instance of ```Logger``` class.
 
+
 ```php
 $Container->register('Bar', function () use ($FactoryWorker) {
     $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
@@ -97,10 +98,62 @@ $Container->register('Bar', function () use ($FactoryWorker) {
 
 ### Create Dependency Container, Factory and FactoryWorker
 Instantiate new ```Dependency Container``` and assign it to ```Factory```.
-Use Factory to get instance of your application or module with specific ```FactoryWorker```.
+Use ```Factory``` to get instance of your application or module with specific ```FactoryWorker```.
+
+### Define the trait
+Example of ```Logger``` dependency trait, which is reused between all of the classes that had ```Logger``` injected as dependency.
+The only thing to remember is that, the name of the trait should be the same,
+as the name under which the dependency has been registered with the ```Dependency Container```.
+
+
+```php
+trait Logger
+{
+    /**
+     * @var LoggerInterface
+     */
+    protected $Logger;
+
+    /**
+     * @inheritdoc
+     */
+    public function getLogger()
+    {
+        return $this->Logger;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setLogger(LoggerInterface $Logger)
+    {
+        $this->Logger = $Logger;
+    }
+}
+```
+
+You can also define and assign the ```LoggerDependencyInterface``` too all classes that are being injected with ```Logger``` instance.
+```php
+interface LoggerDependencyInterface
+{
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger();
+
+    /**
+     * @param Logger LoggerInterface
+     */
+    public function setLogger(LoggerInterface $Logger);
+}
+```
+
 
 ```php
 $Container = new Dependency\Container();
 $Factory = new Factory($Container);
 $FactoryWorker = $Factory->getWorkerByName('MyApplicationWorker', 'MyApplication\Modules\Logger\Factory');
 ```
+
+## Test Driven
+See [tests](https://github.com/oliwierptak/everon-factory/tree/development/tests/unit) for more examples.
