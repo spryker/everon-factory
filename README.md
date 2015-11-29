@@ -206,5 +206,5 @@ In general, a ```Logger``` or ```FactoryWorker``` could be good examples of infr
 See [tests](https://github.com/oliwierptak/everon-factory/blob/development/tests/unit/)
 for [more examples with trait dependencies](https://github.com/oliwierptak/everon-factory/tree/development/tests/unit/doubles/).
 
-## Real example
+## Example
 Check [Everon Criteria Builder](https://github.com/oliwierptak/everon-criteria-builder) to see how to use Everon Factory by example.
