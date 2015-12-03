@@ -81,7 +81,7 @@ trait Logger
 }
 ```
 
-You can also define and assign the ```LoggerAwareInterface``` too all classes that are being injected with ```Logger``` instance.
+Bonus: You can also define and assign the ```LoggerAwareInterface``` too all classes that are being injected with ```Logger``` instance.
 ```php
 interface LoggerAwareInterface
 {
@@ -128,7 +128,6 @@ $Container->register('Application', function () use ($FactoryWorker) {
 
 ### Build with FactoryWorker
 To build your dependencies use the ```FactoryWorker``` classes.
-
 
 ```php
 class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorkerInterface
@@ -189,16 +188,14 @@ class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorker
     }
 }
 ```
-
-### Result:
-#### Every ```Application``` class will be injected with ```Logger``` instance, that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.
+Now ```Application``` and ```UserManager``` will share the same instance of ```Logger``` class.
 
 ```php
 $Application->getLogger()->log('It works');
+$UserManager->getLogger()->log('It works, too');
 ```
 
-
-If you don't do any work in constructors, as you should, and only require the ```Logger``` functionality later, it would be easier
+If you don't do any work in constructors, and you shouldn't, and only require the ```Logger``` functionality later, it would be easier
 to just use the ```Logger``` as the infrastructure type dependency and just inject it via setter injection with one line.
 
 ```php
@@ -208,6 +205,15 @@ class Application
 }
 ```
 
+The end result is the same.
+
+**If reqired, every class will be injected with the same ```Logger``` instance,
+that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.**
+
+
+### Ensures Tests Ready Code (tm)
+Writing tests of classes that use ```Everon Factory``` for the dependency injection
+and instantiation removes the hassle of dealing with dependency problems since everything is so easy to mock.
 
 ### Dependency Container, Factory and FactoryWorker
 Instantiate new ```Dependency Container``` and assign it to ```Factory```.
