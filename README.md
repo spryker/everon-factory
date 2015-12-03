@@ -195,7 +195,14 @@ Use ```Factory``` to get instance of your specific ```FactoryWorker```.
 ```php
 $Container = new Dependency\Container();
 $Factory = new Factory($Container);
-$FactoryWorker = $Factory->getWorkerByName('MyApplicationWorker', 'MyApplication\Modules\Logger\Factory');
+$FactoryWorker = $Factory->getWorkerByName('MyApplicationWorker', 'MyApplication\Modules\Application\Factory');
+//..
+//.. Instantiate your application, and proceed as usual
+//..
+$Application = $FactoryWorker->buildApplication();
+$Application
+    ->bootstrap()
+    ->run();
 ```
 
 ### What's the best way to inject dependencies?
