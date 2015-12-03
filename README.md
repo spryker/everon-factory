@@ -120,11 +120,9 @@ So you can pass the same instance to another class via constructor injection.
 
 
 ```php
-$Container->register('UserManager', function () use ($FactoryWorker) {
+$Container->register('Application', function () use ($FactoryWorker) {
     $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
-    return $FactoryWorker->buildUserManager($Logger, 'argument', [
-        'some' => 'data',
-    ]);
+    return $FactoryWorker->buildApplication($Logger);
 });
 ```
 
@@ -142,7 +140,7 @@ class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorker
     {
         $Factory = $this->getFactory();
         $this->getFactory()->getDependencyContainer()->propose('MyApplicationFactoryWorker', function () use ($Factory) {
-            return $Factory->getWorkerByName('MyApplication', 'MyApplication\Modules\Logger\Factory');
+            return $Factory->getWorkerByName('MyApplication', 'MyApplication\Modules\Application\Factory');
         });
     }
 
@@ -162,28 +160,52 @@ class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorker
      * @param array $data
      * @param string $namespace
      *
-     * @return UserManager
+     * @return Application
      */
-    public function buildUserManager(LoggerInterface $Logger, $anotherArgument, array $data, $namespace = 'MyApplication\Modules\User')
+    public function buildApplication(LoggerInterface $Logger, $namespace = 'MyApplication\Modules\Application')
     {
-        return $this->getFactory()->buildWithConstructorParameters('UserManager', $namespace, $this->buildParameterCollection([
-            $Logger,
-            $anotherArgument,
-            $data,
-        ]));
+        return $this->getFactory()->buildWithConstructorParameters('Application', $namespace,
+            $this->buildParameterCollection([
+                $Logger,
+            ])
+        );
+    }
+
+    /**
+     * @param RepositoryInterface $UserRepository
+     * @param LoggerInterface $Logger
+     * @param string $namespace
+     *
+     * @return Application
+     */
+    public function buildUserManager(RepositoryInterface $UserRepository, LoggerInterface $Logger, $namespace = 'MyApplication\Modules\Application')
+    {
+        return $this->getFactory()->buildWithConstructorParameters('UserManager', $namespace,
+            $this->buildParameterCollection([
+                $UserRepository,
+                $Logger
+            ])
+        );
     }
 }
 ```
 
-### Result
-Every ```UserManager``` class will be injected with ```Logger``` instance, that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.
+### Result:
+#### Every ```Application``` class will be injected with ```Logger``` instance, that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.
+
 ```php
-$UserManager->getLogger()->log('It works');
+$Application->getLogger()->log('It works');
 ```
 
-To reuse same instance of ```Logger``` dependency in another class, only one line is needed.
+
+If you don't do any work in constructors, as you should, and only require the ```Logger``` functionality later, it would be easier
+to just use the ```Logger``` as the infrastructure type dependency and just inject it via setter injection with one line.
+
 ```php
-use Dependency\Setter\Logger;
+class Application
+{
+    use Dependency\Setter\Logger;
+}
 ```
 
 
@@ -191,18 +213,56 @@ use Dependency\Setter\Logger;
 Instantiate new ```Dependency Container``` and assign it to ```Factory```.
 Use ```Factory``` to get instance of your specific ```FactoryWorker```.
 
+The most important thing is, that the dependency tree is built outside of the application, which means that
+the classes which are being instantiated with the ```FactoryWorker``` are not aware
+about the ```Dependency Container``` at all.
+
+It could be in separate files, obviously, split by the application type and the dependencies it needs.
+
+An example, of using the same instance of ```Logger```, in every class, through out whole application,
+which required ```Logger``` dependency.
 
 ```php
 $Container = new Dependency\Container();
 $Factory = new Factory($Container);
-$FactoryWorker = $Factory->getWorkerByName('MyApplicationWorker', 'MyApplication\Modules\Application\Factory');
+$FactoryWorker = $Factory->getWorkerByName('Application', 'MyApplication\Modules\Application\Factory');
+
+$Container->register('Application', function () use ($FactoryWorker) {
+    $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
+    return $FactoryWorker->buildApplication($Logger);
+});
+
+$Container->register('UserManager', function () use ($FactoryWorker) {
+    $UserRepository = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('UserRepository');
+    $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
+    return $FactoryWorker->buildUserManager($UserRepository, $Logger);
+});
+
+$Container->register('Logger', function () use ($FactoryWorker) {
+    return $FactoryWorker->buildLogger();
+});
+
 //..
 //.. Instantiate your application, and proceed as usual
 //..
-$Application = $FactoryWorker->buildApplication();
+$Application = $Container->resolve('Application');
 $Application
     ->bootstrap()
     ->run();
+```
+
+The only thing, that the application or bootstrap class need to do in order to have an access to its own FactoryWorker,
+is to use the FactoryWorker dependency setter trait.
+
+```php
+namespace MyApplication\Modules\Application
+
+ues Everon\Component\Factory\Dependency;
+
+class Application
+{
+    use Dependency\Setter\ApplicationFactoryWorker;
+}
 ```
 
 ### What's the best way to inject dependencies?
