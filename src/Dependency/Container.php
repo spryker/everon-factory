@@ -59,8 +59,6 @@ class Container implements ContainerInterface
      *
      * @throws UndefinedContainerDependencyException
      * @throws UndefinedDependencySetterException
-     *
-     * @internal param $dependency_name
      */
     protected function injectSetterDependency($setter_name, $Receiver)
     {
@@ -157,14 +155,6 @@ class Container implements ContainerInterface
     /**
      * @inheritdoc
      */
-    public function isFactoryRequired($class_name)
-    {
-        return $this->getRequireFactoryCollection()->has($class_name) && $this->getRequireFactoryCollection()->get($class_name);
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function register($name, \Closure $ServiceClosure)
     {
         if ($this->isRegistered($name)) {
@@ -213,9 +203,17 @@ class Container implements ContainerInterface
     /**
      * @inheritdoc
      */
+    public function isFactoryRequired($class_name)
+    {
+        return $this->getRequireFactoryCollection()->has($class_name);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function isInjected($class_name)
     {
-        return $this->getInjectedCollection()->has($class_name) && $this->getInjectedCollection()->get($class_name);
+        return $this->getInjectedCollection()->has($class_name);
     }
 
     /**
