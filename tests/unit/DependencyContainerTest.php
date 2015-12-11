@@ -46,6 +46,7 @@ class DependencyContainerTest extends MockeryTest
                 creates always new instance of Foo */
 
             $FooStub = $Factory->buildFoo();
+
             return $Factory->buildFuzz($FooStub);
         });
 
