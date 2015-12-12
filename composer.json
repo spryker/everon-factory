@@ -1,6 +1,6 @@
 {
   "name": "everon/factory",
-  "description": "Factory",
+  "description": "Everon Factory Component",
   "type": "library",
   "license": "MIT",
   "version": "0.5",
