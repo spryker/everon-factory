@@ -207,7 +207,7 @@ class Application
 
 The end result is the same.
 
-**If reqired, every class will be injected with the same ```Logger``` instance,
+**Every required class will be injected with the same ```Logger``` instance,
 that was registered with the ```Dependency Container``` and build in ```FactoryWorker```.**
 
 
