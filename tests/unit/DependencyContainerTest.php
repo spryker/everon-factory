@@ -134,4 +134,26 @@ class DependencyContainerTest extends MockeryTest
         });
     }
 
+    public function test_propose_should_not_throw_exception_when_service_already_registered()
+    {
+        $Factory = $this->Factory;
+
+        $this->Container->propose('Foo', function () use ($Factory) {
+            return $Factory->buildFoo();
+        });
+
+        $this->Container->propose('Foo', function () {});
+
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FooStub', $this->Container->resolve('Foo'));
+    }
+
+
+    /**
+     * @expectedException \Everon\Component\Factory\Exception\UndefinedContainerDependencyException
+     * @expectedExceptionMessage Undefined container dependency "Foo2344db"
+     */
+    public function test_resolve_should_throw_exception()
+    {
+        $this->Container->resolve('Foo2344db');
+    }
 }

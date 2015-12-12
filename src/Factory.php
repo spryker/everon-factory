@@ -85,6 +85,16 @@ class Factory implements FactoryInterface
         $className = $this->getFullClassName($namespace, $className);
         $this->classExists($className);
 
+        $ReflectionClass = new \ReflectionClass($className);
+
+        if ($ReflectionClass->isInstantiable() === false) {
+            if ($ReflectionClass->isAbstract()) {
+                throw new InstanceIsAbstractClassException($className);
+            } else {
+                throw new UnableToInstantiateException($className);
+            }
+        }
+
         $Instance = new $className();
 
         $this->injectDependencies($className, $Instance);

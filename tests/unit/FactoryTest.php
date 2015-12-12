@@ -9,6 +9,7 @@
  */
 namespace Everon\Component\Factory\Tests\Unit;
 
+use Everon\Component\Collection\Collection;
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Factory;
@@ -104,9 +105,56 @@ class FactoryTest extends MockeryTest
             ->andReturn(false);
 
         /* @var CollectionInterface $CollectionParameters */
-        $BarStub = $this->Factory->buildWithConstructorParameters('BarStub', 'Everon\Component\Factory\Tests\Unit\Doubles', $CollectionParameters);
+        $BarStub = $this->Factory->buildWithConstructorParameters('BarStub',
+            'Everon\Component\Factory\Tests\Unit\Doubles',
+            $CollectionParameters
+        );
 
         $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $BarStub);
     }
 
+    public function test_inject_dependency_once()
+    {
+        $LoggerStub = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub');
+
+        /** @var MockInterface $Container */
+        $Container = $this->Factory->getDependencyContainer();
+        $Container->shouldReceive('injectOnce')->times(1);
+        $Container->shouldReceive('isFactoryRequired')
+            ->times(1)
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\BarStub')
+            ->andReturn(false);
+
+        $this->Factory->injectDependenciesOnce('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $LoggerStub);
+    }
+
+    /**
+     * @expectedException \Everon\Component\Factory\Exception\UndefinedClassException
+     * @expectedExceptionMessage Undefined class "Foo32847822ffs"
+     */
+    public function test_class_exists_should_throw_exception()
+    {
+        $this->Factory->classExists('Foo32847822ffs');
+    }
+
+    /**
+     * @expectedException \Everon\Component\Factory\Exception\InstanceIsAbstractClassException
+     * @expectedExceptionMessage Cannot instantiate abstract class "Everon\Component\Factory\Tests\Unit\Doubles\AbstractStub"
+     */
+    public function test_buildWithEmptyConstructor_instantiate_abstract_class_should_throw_exception()
+    {
+        $AbstractStub = $this->Factory->buildWithEmptyConstructor('AbstractStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+    }
+
+    /**
+     * @expectedException \Everon\Component\Factory\Exception\InstanceIsAbstractClassException
+     * @expectedExceptionMessage Cannot instantiate abstract class "Everon\Component\Factory\Tests\Unit\Doubles\AbstractStub"
+     */
+    public function test_buildWithConstructorParameters_instantiate_abstract_class_should_throw_exception()
+    {
+        $AbstractStub = $this->Factory->buildWithConstructorParameters('AbstractStub',
+            'Everon\Component\Factory\Tests\Unit\Doubles',
+            new Collection([])
+        );
+    }
 }
