@@ -11,7 +11,7 @@ namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
 use Everon\Component\Factory\AbstractWorker;
 
-class FactoryWorkerStub extends AbstractWorker
+class StubFactoryWorker extends AbstractWorker
 {
 
     /**
@@ -19,8 +19,8 @@ class FactoryWorkerStub extends AbstractWorker
      */
     protected function registerBeforeWork()
     {
-        $this->getFactory()->getDependencyContainer()->register('FactoryWorkerStubFac', function () {
-            return $this->getFactory()->getWorkerByName('FactoryWorkerStub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+        $this->getFactory()->getDependencyContainer()->register('StubFactoryWorker', function () {
+            return $this->getFactory()->getWorkerByName('Stub', 'Everon\Component\Factory\Tests\Unit\Doubles');
         });
     }
 

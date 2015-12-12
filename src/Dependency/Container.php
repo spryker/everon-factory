@@ -25,7 +25,7 @@ class Container implements ContainerInterface
     use EndsWith;
     use LastTokenToName;
 
-    const DEPENDENCY_INJECTION_FACTORY = 'Dependency\Factory';
+    const DEPENDENCY_SETTER_FACTORY = 'Dependency\Setter\Factory';
     const TYPE_SETTER_INJECTION = 'Dependency\Setter';
 
     /**
@@ -84,7 +84,7 @@ class Container implements ContainerInterface
      *
      * @return array
      */
-    protected function getClassDependencies($className, $autoload = true)
+    protected function getClassSetterDependencies($className, $autoload = true)
     {
         if ($this->getClassDependencyCollection()->has($className)) {
             return $this->getClassDependencyCollection()->get($className);
@@ -101,6 +101,19 @@ class Container implements ContainerInterface
         }
 
         $dependencies = array_keys($traits);
+
+        $dependencies = array_filter($dependencies, function($dependencyName){
+            $requiredDependency = $this->textLastTokenToName($dependencyName);
+            $setterDependency = sprintf('%s\%s', static::TYPE_SETTER_INJECTION, $requiredDependency);
+            $isSetterInjection = $this->textEndsWith(
+                $dependencyName,
+                $setterDependency
+            );
+
+            return $isSetterInjection;
+        }, ARRAY_FILTER_USE_BOTH);
+
+
         $this->getClassDependencyCollection()->set($className, $dependencies);
 
         return $this->getClassDependencyCollection()->get($className);
@@ -115,28 +128,15 @@ class Container implements ContainerInterface
             throw new InstanceIsNotObjectException();
         }
 
-        $dependencies = $this->getClassDependencies($receiverClassName);
+        $dependencies = $this->getClassSetterDependencies($receiverClassName);
         foreach ($dependencies as $dependencyName) {
-            if ($this->textEndsWith($dependencyName, static::DEPENDENCY_INJECTION_FACTORY)) {
+            if ($this->textEndsWith($dependencyName, static::DEPENDENCY_SETTER_FACTORY)) {
                 $this->getRequireFactoryCollection()->set($receiverClassName, true);
                 continue;
             }
 
             $requiredDependency = $this->textLastTokenToName($dependencyName);
-
-            if (strcasecmp($requiredDependency, $this->textLastTokenToName($receiverClassName)) === 0) {
-                throw new DependencyCannotInjectItselfException($receiverClassName);
-            }
-
-            $setterDependency = sprintf('%s\%s', static::TYPE_SETTER_INJECTION, $requiredDependency);
-            $isSetterInjection = $this->textEndsWith(
-                $dependencyName,
-                $setterDependency
-            );
-
-            if ($isSetterInjection) {
-                $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
-            }
+            $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
         }
     }
 

@@ -11,7 +11,7 @@ namespace Everon\Component\Factory\Tests\Unit;
 
 use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\FactoryInterface;
-use Everon\Component\Factory\Tests\Unit\Doubles\FactoryWorkerStub;
+use Everon\Component\Factory\Tests\Unit\Doubles\StubFactoryWorker;
 use Everon\Component\Utils\TestCase\MockeryTest;
 use Mockery;
 use Mockery\MockInterface;
@@ -20,7 +20,7 @@ class FactoryWorkerTest extends MockeryTest
 {
 
     /**
-     * @var FactoryWorkerStub
+     * @var StubFactoryWorker
      */
     protected $FactoryWorker;
 
@@ -29,7 +29,7 @@ class FactoryWorkerTest extends MockeryTest
         $Factory = Mockery::mock('Everon\Component\Factory\FactoryInterface');
 
         /* @var FactoryInterface $Factory */
-        $this->FactoryWorker = new FactoryWorkerStub($Factory);
+        $this->FactoryWorker = new StubFactoryWorker($Factory);
     }
 
     public function test_build_with_empty_constructor()
@@ -89,6 +89,22 @@ class FactoryWorkerTest extends MockeryTest
         ], 'Everon\Component\Factory\Tests\Unit\Doubles');
 
         $this->assertInstanceOf(get_class($BarStub), $BarStubMock);
+    }
+
+    public function test_do_work()
+    {
+        $Container = Mockery::mock('Everon\Component\Factory\Dependency\ContainerInterface');
+        $Container->shouldReceive('register')->times(1)
+            ->andReturn($this->FactoryWorker);
+
+        $Factory = $this->FactoryWorker->getFactory();
+        /* @var MockInterface $Factory */
+        $Factory->shouldReceive('getDependencyContainer')->times(1)
+            ->andReturn($Container);
+
+        $result = $this->FactoryWorker->doWork();
+
+        $this->assertNull($result);
     }
 
 }

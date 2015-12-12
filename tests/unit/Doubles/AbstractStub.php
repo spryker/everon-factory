@@ -9,20 +9,7 @@
  */
 namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
-use Everon\Component\Factory\Dependency\Setter;
-
-class FuzzStub
+abstract class AbstractStub
 {
-
-    use Dependency\Foo;
-    use Setter\Factory;
-
-    /**
-     * @param FooStub $Foo
-     */
-    public function __construct(FooStub $Foo)
-    {
-        $this->Foo = $Foo;
-    }
 
 }

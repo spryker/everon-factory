@@ -128,6 +128,49 @@ class FactoryTest extends MockeryTest
         $this->Factory->injectDependenciesOnce('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $LoggerStub);
     }
 
+    public function test_getWorkerByName()
+    {
+        $FactoryWorker = Mockery::mock('Everon\Component\Factory\FactoryWorkerInterface');
+
+        /** @var MockInterface $Container */
+        $Container = $this->Factory->getDependencyContainer();
+        $Container->shouldReceive('inject')->times(1);
+        $Container->shouldReceive('isFactoryRequired')
+            ->times(1)
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\StubFactoryWorker')
+            ->andReturn(false);
+
+        $Container->shouldReceive('register')->times(1)
+            ->andReturn($FactoryWorker);
+
+
+        $Worker = $this->Factory->getWorkerByName('Stub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+
+        $this->assertInstanceOf('Everon\Component\Factory\FactoryWorkerInterface', $Worker);
+    }
+
+    public function test_getWorkerByName_should_use_cache()
+    {
+        $FactoryWorker = Mockery::mock('Everon\Component\Factory\FactoryWorkerInterface');
+
+        /** @var MockInterface $Container */
+        $Container = $this->Factory->getDependencyContainer();
+        $Container->shouldReceive('inject')->times(1);
+        $Container->shouldReceive('isFactoryRequired')
+            ->times(1)
+            ->with('Everon\Component\Factory\Tests\Unit\Doubles\StubFactoryWorker')
+            ->andReturn(false);
+
+        $Container->shouldReceive('register')->times(1)
+            ->andReturn($FactoryWorker);
+
+
+        $Worker = $this->Factory->getWorkerByName('Stub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+        $Worker = $this->Factory->getWorkerByName('Stub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+
+        $this->assertInstanceOf('Everon\Component\Factory\FactoryWorkerInterface', $Worker);
+    }
+
     /**
      * @expectedException \Everon\Component\Factory\Exception\UndefinedClassException
      * @expectedExceptionMessage Undefined class "Foo32847822ffs"

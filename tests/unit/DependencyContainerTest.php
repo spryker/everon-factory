@@ -11,9 +11,11 @@ namespace Everon\Component\Factory\Tests\Unit;
 
 use Everon\Component\Factory\Dependency\Container;
 use Everon\Component\Factory\Dependency\ContainerInterface;
+use Everon\Component\Factory\Tests\Unit\Doubles\BarStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FooStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub;
+use Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub;
 use Everon\Component\Utils\TestCase\MockeryTest;
 
 class DependencyContainerTest extends MockeryTest
@@ -134,6 +136,17 @@ class DependencyContainerTest extends MockeryTest
         });
     }
 
+    public function test_propose_should_register_when_not_yet_registered()
+    {
+        $Factory = $this->Factory;
+
+        $this->Container->propose('Foo34343', function () use ($Factory) {
+            return $Factory->buildFoo();
+        });
+
+        $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FooStub', $this->Container->resolve('Foo34343'));
+    }
+
     public function test_propose_should_not_throw_exception_when_service_already_registered()
     {
         $Factory = $this->Factory;
@@ -147,6 +160,14 @@ class DependencyContainerTest extends MockeryTest
         $this->assertInstanceOf('Everon\Component\Factory\Tests\Unit\Doubles\FooStub', $this->Container->resolve('Foo'));
     }
 
+    /**
+     * @expectedException \Everon\Component\Factory\Exception\InstanceIsNotObjectException
+     * @expectedExceptionMessage Instance is not object
+     */
+    public function test_inject_should_throw_exception_when_not_object()
+    {
+        $this->Container->inject('Foo2344db', 'foobar');
+    }
 
     /**
      * @expectedException \Everon\Component\Factory\Exception\UndefinedContainerDependencyException
@@ -156,4 +177,20 @@ class DependencyContainerTest extends MockeryTest
     {
         $this->Container->resolve('Foo2344db');
     }
+
+    public function test_resolve_should_use_cache()
+    {
+        $Logger = $this->Container->resolve('Logger');
+
+        $this->assertTrue($this->Container->getServiceCollection()->has('Logger'));
+
+        $Logger = $this->Container->resolve('Logger');
+    }
+
+    public function test_require_factory()
+    {
+        $Fuzz = new FuzzStub(new FooStub());
+        $this->Container->inject('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub', $Fuzz);
+    }
+
 }
