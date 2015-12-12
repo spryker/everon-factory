@@ -17,27 +17,27 @@ interface ContainerInterface
 {
 
     /**
-     * @param string $receiver_class_name
+     * @param string $receiverClassName
      * @param object $ReceiverInstance
      *
      * @return void
      */
-    public function inject($receiver_class_name, $ReceiverInstance);
+    public function inject($receiverClassName, $ReceiverInstance);
 
     /**
-     * @param string $receiver_class_name
+     * @param string $receiverClassName
      * @param object $ReceiverInstance
      *
      * @return void
      */
-    public function injectOnce($receiver_class_name, $ReceiverInstance);
+    public function injectOnce($receiverClassName, $ReceiverInstance);
 
     /**
-     * @param $class_name
+     * @param $className
      *
      * @return bool
      */
-    public function isFactoryRequired($class_name);
+    public function isFactoryRequired($className);
 
     /**
      * @param $name
@@ -67,11 +67,11 @@ interface ContainerInterface
     public function resolve($name);
 
     /**
-     * @param $class_name
+     * @param $className
      *
      * @return bool
      */
-    public function isInjected($class_name);
+    public function isInjected($className);
 
     /**
      * @param $name

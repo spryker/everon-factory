@@ -43,34 +43,34 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    public function injectDependencies($class_name, $Instance)
+    public function injectDependencies($className, $Instance)
     {
-        $this->getDependencyContainer()->inject($class_name, $Instance);
-        $this->injectFactoryWhenRequired($class_name, $Instance);
+        $this->getDependencyContainer()->inject($className, $Instance);
+        $this->injectFactoryWhenRequired($className, $Instance);
     }
 
     /**
      * @inheritdoc
      */
-    public function injectDependenciesOnce($class_name, $Instance)
+    public function injectDependenciesOnce($className, $Instance)
     {
-        $this->getDependencyContainer()->injectOnce($class_name, $Instance);
-        $this->injectFactoryWhenRequired($class_name, $Instance);
+        $this->getDependencyContainer()->injectOnce($className, $Instance);
+        $this->injectFactoryWhenRequired($className, $Instance);
     }
 
     /**
-     * @param $class_name
+     * @param $className
      * @param object $Instance
      *
      * @throws MissingFactoryAwareInterfaceException
      *
      * @return void
      */
-    protected function injectFactoryWhenRequired($class_name, $Instance)
+    protected function injectFactoryWhenRequired($className, $Instance)
     {
-        if ($this->getDependencyContainer()->isFactoryRequired($class_name)) {
+        if ($this->getDependencyContainer()->isFactoryRequired($className)) {
             if (($Instance instanceof FactoryAwareInterface) === false) {
-                throw new MissingFactoryAwareInterfaceException($class_name);
+                throw new MissingFactoryAwareInterfaceException($className);
             }
             /* @var FactoryAwareInterface $Instance */
             $Instance->setFactory($this);
@@ -80,14 +80,14 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    public function buildWithEmptyConstructor($class_name, $namespace)
+    public function buildWithEmptyConstructor($className, $namespace)
     {
-        $class_name = $this->getFullClassName($namespace, $class_name);
-        $this->classExists($class_name);
+        $className = $this->getFullClassName($namespace, $className);
+        $this->classExists($className);
 
-        $Instance = new $class_name();
+        $Instance = new $className();
 
-        $this->injectDependencies($class_name, $Instance);
+        $this->injectDependencies($className, $Instance);
 
         return $Instance;
     }
@@ -95,18 +95,18 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    public function buildWithConstructorParameters($class_name, $namespace, CollectionInterface $parameterCollection)
+    public function buildWithConstructorParameters($className, $namespace, CollectionInterface $parameterCollection)
     {
-        $class_name = $this->getFullClassName($namespace, $class_name);
-        $this->classExists($class_name);
+        $className = $this->getFullClassName($namespace, $className);
+        $this->classExists($className);
 
-        $ReflectionClass = new \ReflectionClass($class_name);
+        $ReflectionClass = new \ReflectionClass($className);
 
         if ($ReflectionClass->isInstantiable() === false) {
             if ($ReflectionClass->isAbstract()) {
-                throw new InstanceIsAbstractClassException($class_name);
+                throw new InstanceIsAbstractClassException($className);
             } else {
-                throw new UnableToInstantiateException($class_name);
+                throw new UnableToInstantiateException($className);
             }
         }
 
@@ -114,7 +114,7 @@ class Factory implements FactoryInterface
             array_values($parameterCollection->toArray())
         );
 
-        $this->injectDependencies($class_name, $Instance);
+        $this->injectDependencies($className, $Instance);
 
         return $Instance;
     }
@@ -138,13 +138,13 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    public function getFullClassName($namespace, $class_name)
+    public function getFullClassName($namespace, $className)
     {
-        if ($class_name[0] === '\\') { //used for when laading classmap from cache
-            return $class_name; //absolute name
+        if ($className[0] === '\\') { //used for when laading classmap from cache
+            return $className; //absolute name
         }
 
-        return $namespace . '\\' . $class_name;
+        return $namespace . '\\' . $className;
     }
 
     /**

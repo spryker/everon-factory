@@ -20,23 +20,23 @@ interface FactoryInterface
 {
 
     /**
-     * @param $class_name
+     * @param $className
      * @param $Instance
      *
      * @return void
      */
-    public function injectDependencies($class_name, $Instance);
+    public function injectDependencies($className, $Instance);
 
     /**
-     * @param $class_name
+     * @param $className
      * @param $Instance
      *
      * @return void
      */
-    public function injectDependenciesOnce($class_name, $Instance);
+    public function injectDependenciesOnce($className, $Instance);
 
     /**
-     * @param $class_name
+     * @param $className
      * @param $namespace
      *
      * @throws MissingFactoryAwareInterfaceException
@@ -44,10 +44,10 @@ interface FactoryInterface
      *
      * @return object
      */
-    public function buildWithEmptyConstructor($class_name, $namespace);
+    public function buildWithEmptyConstructor($className, $namespace);
 
     /**
-     * @param $class_name
+     * @param $className
      * @param $namespace
      * @param CollectionInterface $parameterCollection
      *
@@ -56,7 +56,7 @@ interface FactoryInterface
      *
      * @return object
      */
-    public function buildWithConstructorParameters($class_name, $namespace, CollectionInterface $parameterCollection);
+    public function buildWithConstructorParameters($className, $namespace, CollectionInterface $parameterCollection);
 
     /**
      * @return ContainerInterface
@@ -72,11 +72,11 @@ interface FactoryInterface
 
     /**
      * @param $namespace
-     * @param $class_name
+     * @param $className
      *
      * @return string
      */
-    public function getFullClassName($namespace, $class_name);
+    public function getFullClassName($namespace, $className);
 
     /**
      * @param $class

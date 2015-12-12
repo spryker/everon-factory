@@ -54,44 +54,44 @@ class Container implements ContainerInterface
     protected $InjectedCollection;
 
     /**
-     * @param $setter_name
+     * @param $setterName
      * @param $Receiver
      *
      * @throws UndefinedContainerDependencyException
      * @throws UndefinedDependencySetterException
      */
-    protected function injectSetterDependency($setter_name, $Receiver)
+    protected function injectSetterDependency($setterName, $Receiver)
     {
         $receiverClassName = get_class($Receiver);
-        $method = 'set' . $setter_name; //eg. setConfigManager
+        $method = 'set' . $setterName; //eg. setConfigManager
         if (method_exists($Receiver, $method) === false) {
             throw new UndefinedDependencySetterException([
                 $method,
-                $setter_name,
+                $setterName,
                 $receiverClassName,
             ]);
         }
 
-        $Dependency = $this->resolve($setter_name);
+        $Dependency = $this->resolve($setterName);
         $Receiver->$method($Dependency);
 
         $this->getInjectedCollection()->set($receiverClassName, true);
     }
 
     /**
-     * @param $class_name
+     * @param $className
      * @param bool $autoload
      *
      * @return array
      */
-    protected function getClassDependencies($class_name, $autoload = true)
+    protected function getClassDependencies($className, $autoload = true)
     {
-        if ($this->getClassDependencyCollection()->has($class_name)) {
-            return $this->getClassDependencyCollection()->get($class_name);
+        if ($this->getClassDependencyCollection()->has($className)) {
+            return $this->getClassDependencyCollection()->get($className);
         }
 
-        $traits = class_uses($class_name, $autoload);
-        $parents = class_parents($class_name, $autoload);
+        $traits = class_uses($className, $autoload);
+        $parents = class_parents($className, $autoload);
 
         foreach ($parents as $parent) {
             $traits = array_merge(
@@ -101,31 +101,31 @@ class Container implements ContainerInterface
         }
 
         $dependencies = array_keys($traits);
-        $this->getClassDependencyCollection()->set($class_name, $dependencies);
+        $this->getClassDependencyCollection()->set($className, $dependencies);
 
-        return $this->getClassDependencyCollection()->get($class_name);
+        return $this->getClassDependencyCollection()->get($className);
     }
 
     /**
      * @inheritdoc
      */
-    public function inject($receiver_class_name, $ReceiverInstance)
+    public function inject($receiverClassName, $ReceiverInstance)
     {
         if (is_object($ReceiverInstance) === false) {
             throw new InstanceIsNotObjectException();
         }
 
-        $dependencies = $this->getClassDependencies($receiver_class_name);
+        $dependencies = $this->getClassDependencies($receiverClassName);
         foreach ($dependencies as $dependencyName) {
             if ($this->textEndsWith($dependencyName, static::DEPENDENCY_INJECTION_FACTORY)) {
-                $this->getRequireFactoryCollection()->set($receiver_class_name, true);
+                $this->getRequireFactoryCollection()->set($receiverClassName, true);
                 continue;
             }
 
             $requiredDependency = $this->textLastTokenToName($dependencyName);
 
-            if (strcasecmp($requiredDependency, $this->textLastTokenToName($receiver_class_name)) === 0) {
-                throw new DependencyCannotInjectItselfException($receiver_class_name);
+            if (strcasecmp($requiredDependency, $this->textLastTokenToName($receiverClassName)) === 0) {
+                throw new DependencyCannotInjectItselfException($receiverClassName);
             }
 
             $setterDependency = sprintf('%s\%s', static::TYPE_SETTER_INJECTION, $requiredDependency);
@@ -143,13 +143,13 @@ class Container implements ContainerInterface
     /**
      * @inheritdoc
      */
-    public function injectOnce($receiver_class_name, $ReceiverInstance)
+    public function injectOnce($receiverClassName, $ReceiverInstance)
     {
-        if ($this->isInjected($receiver_class_name)) {
+        if ($this->isInjected($receiverClassName)) {
             return;
         }
 
-        $this->inject($receiver_class_name, $ReceiverInstance);
+        $this->inject($receiverClassName, $ReceiverInstance);
     }
 
     /**
@@ -203,17 +203,17 @@ class Container implements ContainerInterface
     /**
      * @inheritdoc
      */
-    public function isFactoryRequired($class_name)
+    public function isFactoryRequired($className)
     {
-        return $this->getRequireFactoryCollection()->has($class_name);
+        return $this->getRequireFactoryCollection()->has($className);
     }
 
     /**
      * @inheritdoc
      */
-    public function isInjected($class_name)
+    public function isInjected($className)
     {
-        return $this->getInjectedCollection()->has($class_name);
+        return $this->getInjectedCollection()->has($className);
     }
 
     /**
