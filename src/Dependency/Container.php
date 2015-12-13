@@ -111,8 +111,7 @@ class Container implements ContainerInterface
             );
 
             return $isSetterInjection;
-        }, ARRAY_FILTER_USE_BOTH);
-
+        }, \ARRAY_FILTER_USE_BOTH);
 
         $this->getClassDependencyCollection()->set($className, $dependencies);
 
