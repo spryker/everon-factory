@@ -103,7 +103,7 @@ class Container implements ContainerInterface
         $dependencies = array_keys($traits);
         $dependencies = array_filter($dependencies, function($dependencyName){
             return $this->isSetterInjection($dependencyName);
-        }, \ARRAY_FILTER_USE_BOTH);
+        });
 
         $this->getClassDependencyCollection()->set($className, $dependencies);
 
