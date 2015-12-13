@@ -101,21 +101,35 @@ class Container implements ContainerInterface
         }
 
         $dependencies = array_keys($traits);
-
         $dependencies = array_filter($dependencies, function($dependencyName){
-            $requiredDependency = $this->textLastTokenToName($dependencyName);
-            $setterDependency = sprintf('%s\%s', static::TYPE_SETTER_INJECTION, $requiredDependency);
-            $isSetterInjection = $this->textEndsWith(
-                $dependencyName,
-                $setterDependency
-            );
-
-            return $isSetterInjection;
+            return $this->isSetterInjection($dependencyName);
         }, \ARRAY_FILTER_USE_BOTH);
 
         $this->getClassDependencyCollection()->set($className, $dependencies);
 
         return $this->getClassDependencyCollection()->get($className);
+    }
+
+    /**
+     * @param $dependencyName
+     *
+     * @return bool
+     */
+    protected function isSetterInjection($dependencyName)
+    {
+        $requiredDependency = $this->textLastTokenToName($dependencyName);
+        $setterDependency = sprintf('%s\%s', static::TYPE_SETTER_INJECTION, $requiredDependency);
+        return $this->textEndsWith($dependencyName, $setterDependency);
+    }
+
+    /**
+     * @param $dependencyName
+     *
+     * @return bool
+     */
+    protected function isFactoryInjection($dependencyName)
+    {
+        return $this->textEndsWith($dependencyName, static::DEPENDENCY_SETTER_FACTORY);
     }
 
     /**
@@ -129,7 +143,7 @@ class Container implements ContainerInterface
 
         $dependencies = $this->getClassSetterDependencies($receiverClassName);
         foreach ($dependencies as $dependencyName) {
-            if ($this->textEndsWith($dependencyName, static::DEPENDENCY_SETTER_FACTORY)) {
+            if ($this->isFactoryInjection($dependencyName)) {
                 $this->getRequireFactoryCollection()->set($receiverClassName, true);
                 continue;
             }
