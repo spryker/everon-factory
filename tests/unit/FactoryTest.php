@@ -143,7 +143,6 @@ class FactoryTest extends MockeryTest
         $Container->shouldReceive('register')->times(1)
             ->andReturn($FactoryWorker);
 
-
         $Worker = $this->Factory->getWorkerByName('Stub', 'Everon\Component\Factory\Tests\Unit\Doubles');
 
         $this->assertInstanceOf('Everon\Component\Factory\FactoryWorkerInterface', $Worker);
@@ -163,7 +162,6 @@ class FactoryTest extends MockeryTest
 
         $Container->shouldReceive('register')->times(1)
             ->andReturn($FactoryWorker);
-
 
         $Worker = $this->Factory->getWorkerByName('Stub', 'Everon\Component\Factory\Tests\Unit\Doubles');
         $Worker = $this->Factory->getWorkerByName('Stub', 'Everon\Component\Factory\Tests\Unit\Doubles');
@@ -200,4 +198,5 @@ class FactoryTest extends MockeryTest
             new Collection([])
         );
     }
+
 }

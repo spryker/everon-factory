@@ -11,5 +11,4 @@ namespace Everon\Component\Factory\Tests\Unit\Doubles;
 
 abstract class AbstractStub
 {
-
 }

@@ -11,7 +11,6 @@ namespace Everon\Component\Factory\Dependency;
 
 use Everon\Component\Collection\Collection;
 use Everon\Component\Collection\CollectionInterface;
-use Everon\Component\Factory\Exception\DependencyCannotInjectItselfException;
 use Everon\Component\Factory\Exception\DependencyServiceAlreadyRegisteredException;
 use Everon\Component\Factory\Exception\InstanceIsNotObjectException;
 use Everon\Component\Factory\Exception\UndefinedContainerDependencyException;
@@ -101,7 +100,7 @@ class Container implements ContainerInterface
         }
 
         $dependencies = array_keys($traits);
-        $dependencies = array_filter($dependencies, function($dependencyName){
+        $dependencies = array_filter($dependencies, function ($dependencyName) {
             return $this->isSetterInjection($dependencyName);
         });
 
@@ -119,6 +118,7 @@ class Container implements ContainerInterface
     {
         $requiredDependency = $this->textLastTokenToName($dependencyName);
         $setterDependency = sprintf('%s\%s', static::TYPE_SETTER_INJECTION, $requiredDependency);
+
         return $this->textEndsWith($dependencyName, $setterDependency);
     }
 

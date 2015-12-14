@@ -11,11 +11,9 @@ namespace Everon\Component\Factory\Tests\Unit;
 
 use Everon\Component\Factory\Dependency\Container;
 use Everon\Component\Factory\Dependency\ContainerInterface;
-use Everon\Component\Factory\Tests\Unit\Doubles\BarStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FooStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub;
-use Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub;
 use Everon\Component\Utils\TestCase\MockeryTest;
 
 class DependencyContainerTest extends MockeryTest
