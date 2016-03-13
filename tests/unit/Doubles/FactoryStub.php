@@ -15,44 +15,47 @@ class FactoryStub extends Factory
 {
 
     /**
-     * @param string $namespace
-     *
      * @return FuzzStub
      */
-    public function buildFuzz(FooStub $FooStub, $namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildFuzz(FooStub $FooStub)
     {
-        return $this->buildWithConstructorParameters('FuzzStub', $namespace, $this->buildParameterCollection([
-            $FooStub,
-        ]));
+        $FuzzStub = new FuzzStub($FooStub);
+        $this->injectDependencies(FuzzStub::class, $FuzzStub);
+
+        return $FuzzStub;
     }
 
     /**
-     * @param string $namespace
-     *
      * @return FooStub
      */
-    public function buildFoo($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildFoo()
     {
-        return $this->buildWithEmptyConstructor('FooStub', $namespace);
+        $FooStub = new FooStub();
+        $this->injectDependencies(FooStub::class, $FooStub);
+
+        return $FooStub;
     }
 
     /**
-     * @param string $namespace
-     *
      * @return BarStub
      */
-    public function buildBar(LoggerStub $LoggerStub, $anotherArgument, array $data, $namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildBar(LoggerStub $LoggerStub, $anotherArgument, array $data)
     {
-        return $this->buildWithConstructorParameters('BarStub', $namespace, $this->buildParameterCollection([
-            $LoggerStub,
-            $anotherArgument,
-            $data,
-        ]));
+        $BarStub = new BarStub($LoggerStub, $anotherArgument, $data);
+        $this->injectDependencies(BarStub::class, $BarStub);
+
+        return $BarStub;
     }
 
-    public function buildLogger($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    /**
+     * @return LoggerStub
+     */
+    public function buildLogger()
     {
-        return $this->buildWithEmptyConstructor('LoggerStub', $namespace);
+        $LoggerStub = new LoggerStub();
+        $this->injectDependencies(LoggerStub::class, $LoggerStub);
+
+        return $LoggerStub;
     }
 
 }

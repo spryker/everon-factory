@@ -9,14 +9,11 @@
  */
 namespace Everon\Component\Factory;
 
-use Everon\Component\Collection\Collection;
-use Everon\Component\Collection\CollectionInterface;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Dependency\FactoryAwareInterface;
-use Everon\Component\Factory\Exception\InstanceIsAbstractClassException;
 use Everon\Component\Factory\Exception\MissingFactoryAwareInterfaceException;
-use Everon\Component\Factory\Exception\UnableToInstantiateException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
+use Everon\Component\Factory\Exception\UndefinedFactoryWorkerException;
 
 class Factory implements FactoryInterface
 {
@@ -27,17 +24,11 @@ class Factory implements FactoryInterface
     protected static $DependencyContainer;
 
     /**
-     * @var FactoryWorkerInterface[]|CollectionInterface
-     */
-    protected static $WorkerCollection;
-
-    /**
      * @param ContainerInterface $Container
      */
     public function __construct(ContainerInterface $Container)
     {
         static::$DependencyContainer = $Container;
-        static::$WorkerCollection = new Collection([]);
     }
 
     /**
@@ -80,69 +71,9 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    public function buildWithEmptyConstructor($className, $namespace)
-    {
-        $className = $this->getFullClassName($namespace, $className);
-        $this->classExists($className);
-
-        $ReflectionClass = new \ReflectionClass($className);
-
-        if ($ReflectionClass->isInstantiable() === false) {
-            if ($ReflectionClass->isAbstract()) {
-                throw new InstanceIsAbstractClassException($className);
-            } else {
-                throw new UnableToInstantiateException($className);
-            }
-        }
-
-        $Instance = new $className();
-
-        $this->injectDependencies($className, $Instance);
-
-        return $Instance;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function buildWithConstructorParameters($className, $namespace, CollectionInterface $parameterCollection)
-    {
-        $className = $this->getFullClassName($namespace, $className);
-        $this->classExists($className);
-
-        $ReflectionClass = new \ReflectionClass($className);
-
-        if ($ReflectionClass->isInstantiable() === false) {
-            if ($ReflectionClass->isAbstract()) {
-                throw new InstanceIsAbstractClassException($className);
-            } else {
-                throw new UnableToInstantiateException($className);
-            }
-        }
-
-        $Instance = $ReflectionClass->newInstanceArgs(
-            array_values($parameterCollection->toArray())
-        );
-
-        $this->injectDependencies($className, $Instance);
-
-        return $Instance;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDependencyContainer()
+    protected function getDependencyContainer()
     {
         return static::$DependencyContainer;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function setDependencyContainer(ContainerInterface $Container)
-    {
-        static::$DependencyContainer = $Container;
     }
 
     /**
@@ -170,32 +101,39 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    public function buildParameterCollection(array $parameters)
+    public function buildWorker($className)
     {
-        return new Collection($parameters);
+        if ($this->classExists($className) === false) {
+            throw new UndefinedClassException();
+        }
+        /** @var FactoryWorkerInterface $Worker */
+        $Worker = new $className($this);
+        $this->injectDependencies($className, $Worker);
+
+        $Worker->doWork();
+
+        return $Worker;
     }
 
     /**
      * @inheritdoc
      */
-    public function getWorkerByName($name, $namespace='Everon\Component\Factory')
+    public function registerWorkerCallback($name, \Closure $Worker)
     {
-        $className = sprintf('%sFactoryWorker', $name);
+        $this->getDependencyContainer()->propose($name, $Worker);
+    }
 
-        if (static::$WorkerCollection->has($className)) {
-            return static::$WorkerCollection->get($className);
+    /**
+     * @inheritdoc
+     */
+    public function getWorkerByName($name)
+    {
+        $Worker = $this->getDependencyContainer()->resolve($name);
+        if ($Worker === null) {
+            throw new UndefinedFactoryWorkerException($name);
         }
 
-        /** @var FactoryWorkerInterface $Worker */
-        $Worker = $this->buildWithConstructorParameters($className, $namespace, $this->buildParameterCollection([
-            $this,
-        ]));
-
-        $Worker->doWork();
-
-        static::$WorkerCollection->set($className, $Worker);
-
-        return static::$WorkerCollection->get($className);
+        return $Worker;
     }
 
 }

@@ -15,6 +15,7 @@ use Everon\Component\Factory\Exception\InstanceIsAbstractClassException;
 use Everon\Component\Factory\Exception\MissingFactoryAwareInterfaceException;
 use Everon\Component\Factory\Exception\UnableToInstantiateException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
+use Everon\Component\Factory\Exception\UndefinedFactoryWorkerException;
 
 interface FactoryInterface
 {
@@ -26,49 +27,6 @@ interface FactoryInterface
      * @return void
      */
     public function injectDependencies($className, $Instance);
-
-    /**
-     * @param $className
-     * @param $Instance
-     *
-     * @return void
-     */
-    public function injectDependenciesOnce($className, $Instance);
-
-    /**
-     * @param $className
-     * @param $namespace
-     *
-     * @throws MissingFactoryAwareInterfaceException
-     * @throws UndefinedClassException
-     *
-     * @return object
-     */
-    public function buildWithEmptyConstructor($className, $namespace);
-
-    /**
-     * @param $className
-     * @param $namespace
-     * @param CollectionInterface $parameterCollection
-     *
-     * @throws MissingFactoryAwareInterfaceException
-     * @throws UndefinedClassException
-     *
-     * @return object
-     */
-    public function buildWithConstructorParameters($className, $namespace, CollectionInterface $parameterCollection);
-
-    /**
-     * @return ContainerInterface
-     */
-    public function getDependencyContainer();
-
-    /**
-     * @param ContainerInterface $Container
-     *
-     * @return void
-     */
-    public function setDependencyContainer(ContainerInterface $Container);
 
     /**
      * @param $namespace
@@ -88,21 +46,29 @@ interface FactoryInterface
     public function classExists($class);
 
     /**
-     * @param array $parameters
+     * @param string $className
      *
-     * @return CollectionInterface
-     */
-    public function buildParameterCollection(array $parameters);
-
-    /**
-     * @param $name
-     * @param string $namespace
-     *
-     * @throws InstanceIsAbstractClassException
-     * @throws UnableToInstantiateException
+     * @throws UndefinedClassException
      *
      * @return FactoryWorkerInterface
      */
-    public function getWorkerByName($name, $namespace='Everon\Component\Factory');
+    public function buildWorker($className);
+
+    /**
+     * @param string $name
+     * @param \Closure $Worker
+     *
+     * @return void
+     */
+    public function registerWorkerCallback($name, \Closure $Worker);
+
+    /**
+     * @param string $name
+     *
+     * @throws UndefinedFactoryWorkerException
+     *
+     * @return FactoryWorkerInterface
+     */
+    public function getWorkerByName($name);
 
 }
