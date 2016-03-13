@@ -11,6 +11,7 @@ namespace Everon\Component\Factory\Tests\Unit;
 
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Factory;
+use Everon\Component\Factory\Tests\Unit\Doubles\BarStub;
 use Everon\Component\Factory\Tests\Unit\Doubles\StubFactoryWorker;
 use Everon\Component\Utils\TestCase\MockeryTest;
 use Mockery;
@@ -72,10 +73,10 @@ class FactoryTest extends MockeryTest
         $Container->shouldReceive('injectOnce')->times(1);
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
-            ->with('Everon\Component\Factory\Tests\Unit\Doubles\BarStub')
+            ->with(BarStub::class)
             ->andReturn(false);
 
-        $Factory->injectDependenciesOnce('Everon\Component\Factory\Tests\Unit\Doubles\BarStub', $LoggerStub);
+        $Factory->injectDependenciesOnce(BarStub::class, $LoggerStub);
     }
 
     public function test_getWorkerByName()

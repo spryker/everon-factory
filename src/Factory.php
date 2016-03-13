@@ -71,7 +71,7 @@ class Factory implements FactoryInterface
     /**
      * @inheritdoc
      */
-    protected function getDependencyContainer()
+    public function getDependencyContainer()
     {
         return static::$DependencyContainer;
     }

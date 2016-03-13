@@ -9,11 +9,17 @@
  */
 namespace Everon\Component\Factory;
 
+use Everon\Component\CriteriaBuilder\Criteria\ContainerInterface;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 use Everon\Component\Factory\Exception\UndefinedFactoryWorkerException;
 
 interface FactoryInterface
 {
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getDependencyContainer();
 
     /**
      * @param $className

@@ -111,6 +111,7 @@ class DependencyContainerTest extends MockeryTest
         $this->Container->injectOnce(get_class($Fuzz), $Fuzz);
         $this->assertFalse($this->Container->isInjected(get_class($Fuzz)));
 
+        $this->assertFalse($this->Container->isInjected(get_class($FooStub)));
         $this->Container->injectOnce(get_class($FooStub), $FooStub);
         $this->assertTrue($this->Container->isInjected(get_class($FooStub)));
 
