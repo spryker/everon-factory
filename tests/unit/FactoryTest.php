@@ -15,7 +15,6 @@ use Everon\Component\Factory\Tests\Unit\Doubles\StubFactoryWorker;
 use Everon\Component\Utils\TestCase\MockeryTest;
 use Mockery;
 use Mockery\MockInterface;
-use Everon\Component\Factory\Tests\Unit\Doubles\FactoryStub;
 
 class FactoryTest extends MockeryTest
 {
@@ -32,7 +31,7 @@ class FactoryTest extends MockeryTest
 
         $Fuzz->shouldReceive('setFactory')->times(1)->with($Factory);
 
-        /** @var MockInterface $Container */
+        /* @var MockInterface $Container */
         $Container->shouldReceive('inject')->times(1);
 
         $Container->shouldReceive('isFactoryRequired')
@@ -51,7 +50,7 @@ class FactoryTest extends MockeryTest
 
         $Fuzz = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\FuzzStub');
 
-        /** @var MockInterface $Container */
+        /* @var MockInterface $Container */
         $Container->shouldReceive('inject')->times(1);
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
@@ -69,7 +68,7 @@ class FactoryTest extends MockeryTest
 
         $LoggerStub = Mockery::mock('Everon\Component\Factory\Tests\Unit\Doubles\LoggerStub');
 
-        /** @var MockInterface $Container */
+        /* @var MockInterface $Container */
         $Container->shouldReceive('injectOnce')->times(1);
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
@@ -87,7 +86,7 @@ class FactoryTest extends MockeryTest
 
         $FactoryWorker = Mockery::mock('Everon\Component\Factory\FactoryWorkerInterface');
 
-        /** @var MockInterface $Container */
+        /* @var MockInterface $Container */
         $Container->shouldReceive('resolve')->times(1)->with('StubFactoryWorker')->andReturn($FactoryWorker);
 
         $Worker = $Factory->getWorkerByName('StubFactoryWorker');
@@ -105,7 +104,7 @@ class FactoryTest extends MockeryTest
         $Container = Mockery::mock('Everon\Component\Factory\Dependency\ContainerInterface');
         $Factory = new Factory($Container);
 
-        /** @var MockInterface $Container */
+        /* @var MockInterface $Container */
         $Container->shouldReceive('resolve')->times(1)->with('StubFactoryWorker')->andReturn(null);
 
         $Worker = $Factory->getWorkerByName('StubFactoryWorker');
@@ -121,7 +120,7 @@ class FactoryTest extends MockeryTest
 
         $FactoryWorker = Mockery::mock('Everon\Component\Factory\FactoryWorkerInterface');
 
-        /** @var MockInterface $Container */
+        /* @var MockInterface $Container */
         $Container->shouldReceive('inject')->times(1);
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)

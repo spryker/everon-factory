@@ -9,11 +9,6 @@
  */
 namespace Everon\Component\Factory;
 
-use Everon\Component\Collection\CollectionInterface;
-use Everon\Component\Factory\Dependency\ContainerInterface;
-use Everon\Component\Factory\Exception\InstanceIsAbstractClassException;
-use Everon\Component\Factory\Exception\MissingFactoryAwareInterfaceException;
-use Everon\Component\Factory\Exception\UnableToInstantiateException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 use Everon\Component\Factory\Exception\UndefinedFactoryWorkerException;
 
