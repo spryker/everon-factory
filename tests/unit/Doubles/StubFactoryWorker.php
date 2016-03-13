@@ -15,16 +15,6 @@ class StubFactoryWorker extends AbstractWorker
 {
 
     /**
-     * @inheritdoc
-     */
-    protected function registerBeforeWork()
-    {
-        $this->getFactory()->registerWorkerCallback('StubFactoryWorker', function () {
-            return $this->getFactory()->buildWorker(self::class);
-        });
-    }
-
-    /**
      * @return FuzzStub
      */
     public function buildFuzz()
