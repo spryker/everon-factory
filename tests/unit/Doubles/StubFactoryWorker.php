@@ -19,62 +19,58 @@ class StubFactoryWorker extends AbstractWorker
      */
     protected function registerBeforeWork()
     {
-        $this->registerWorker('StubFactoryWorker', function () {
-            return $this->getFactory()->getWorkerByName('Stub', 'Everon\Component\Factory\Tests\Unit\Doubles');
+        $this->getFactory()->registerWorkerCallback('StubFactoryWorker', function () {
+            return $this->getFactory()->buildWorker(self::class);
         });
     }
 
     /**
-     * @param string $namespace
-     *
      * @return FuzzStub
      */
-    public function buildFuzz($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildFuzz()
     {
-        $FooStub = $this->buildFoo($namespace);
+        $FooStub = $this->buildFoo();
 
-        return $this->getFactory()->buildWithConstructorParameters('FuzzStub', $namespace, $this->getFactory()->buildParameterCollection([
-            $FooStub,
-        ]));
+        $FuzzStub = new FuzzStub($FooStub);
+        $this->getFactory()->injectDependencies(FuzzStub::class, $FuzzStub);
+
+        return $FuzzStub;
     }
 
     /**
-     * @param string $namespace
-     *
      * @return FooStub
      */
-    public function buildFoo($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildFoo()
     {
-        return $this->getFactory()->buildWithEmptyConstructor('FooStub', $namespace);
+        $FooStub = new FooStub();
+        $this->getFactory()->injectDependencies(FooStub::class, $FooStub);
+
+        return $FooStub;
     }
 
     /**
-     * @param string $namespace
-     *
      * @return BarStub
      */
-    public function buildBar($anotherArgument, array $data, $namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildBar($anotherArgument, array $data)
     {
         //$LoggerStub = $this->getFactory()->buildWithEmptyConstructor('LoggerStub', $namespace);
         $LoggerStub = $this->getFactory()->getDependencyContainer()->resolve('Logger');
 
-        return $this->getFactory()->buildWithConstructorParameters('BarStub', $namespace,
-            $this->getFactory()->buildParameterCollection([
-                $LoggerStub,
-                $anotherArgument,
-                $data,
-            ])
-        );
+        $BarStub = new BarStub($LoggerStub, $anotherArgument, $data);
+        $this->getFactory()->injectDependencies(BarStub::class, $BarStub);
+
+        return $BarStub;
     }
 
     /**
-     * @param string $namespace
-     *
      * @return LoggerStub
      */
-    public function buildLogger($namespace = 'Everon\Component\Factory\Tests\Unit\Doubles')
+    public function buildLogger()
     {
-        return $this->getFactory()->buildWithEmptyConstructor('LoggerStub', $namespace);
+        $LoggerStub = new LoggerStub();
+        $this->getFactory()->injectDependencies(LoggerStub::class, $LoggerStub);
+
+        return $LoggerStub;
     }
 
 }
