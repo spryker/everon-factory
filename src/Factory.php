@@ -110,8 +110,6 @@ class Factory implements FactoryInterface
         $Worker = new $className($this);
         $this->injectDependencies($className, $Worker);
 
-        $Worker->doWork();
-
         return $Worker;
     }
 
@@ -129,7 +127,8 @@ class Factory implements FactoryInterface
     public function getWorkerByName($name)
     {
         $Worker = $this->getDependencyContainer()->resolve($name);
-        if ($Worker === null) {
+
+        if ($Worker === null || ($Worker instanceof FactoryWorkerInterface) === false) {
             throw new UndefinedFactoryWorkerException($name);
         }
 

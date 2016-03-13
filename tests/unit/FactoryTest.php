@@ -119,17 +119,12 @@ class FactoryTest extends MockeryTest
         $Container = Mockery::mock('Everon\Component\Factory\Dependency\ContainerInterface');
         $Factory = new Factory($Container);
 
-        $FactoryWorker = Mockery::mock('Everon\Component\Factory\FactoryWorkerInterface');
-
         /* @var MockInterface $Container */
         $Container->shouldReceive('inject')->times(1);
         $Container->shouldReceive('isFactoryRequired')
             ->times(1)
             ->with(StubFactoryWorker::class)
             ->andReturn(false);
-
-        $Container->shouldReceive('propose')->times(1)
-            ->andReturn($FactoryWorker);
 
         $Worker = $Factory->buildWorker(StubFactoryWorker::class);
 

@@ -1,4 +1,4 @@
-# Everon Factory Component v1.0
+# Everon Factory Component
 Library to handle dependency injection and instantiation. Allows to produce code that is easy to test.
 
 ## Works with
@@ -102,9 +102,9 @@ You can reuse already defined ```Dependency\Logger``` trait, in every class that
 
 
 ```php
-namespace MyApplication\Modules\Logger\Dependency\Setter;
+namespace Application\Modules\Logger\Dependency\Setter;
 
-use MyApplication\Modules\Logger\Dependency;
+use Application\Modules\Logger\Dependency;
 
 trait Logger
 {
@@ -112,24 +112,32 @@ trait Logger
 }
 ```
 
+### Register with Factory
+Use ```registerWorkerCallback``` to register callback which will return instance of required FactoryWorker.
+```php
+$Factory->registerWorkerCallback('ApplicationFactoryWorker', function() use ($Factory) {
+    return $Factory->buildWorker(Application::class);
+});
+```
+
 ### Build with FactoryWorker
 To build your dependencies use the ```FactoryWorker``` classes.
 
 ```php
-class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorkerInterface
+class ApplicationFactoryWorker extends AbstractWorker implements FactoryWorkerInterface
 {
     /**
      * @inheritdoc
      */
     protected function registerBeforeWork()
     {
-        $this->getFactory()->registerWorkerCallback('MyApplicationFactoryWorker', function () {
+        $this->getFactory()->registerWorkerCallback('ApplicationFactoryWorker', function () {
             return $this->getFactory()->buildWorker(self::class);
         });
     }
 
     /**
-     * @return Foo
+     * @return Logger
      */
     public function buildLogger()
     {
@@ -148,20 +156,19 @@ class MyApplicationFactoryWorker extends AbstractWorker implements FactoryWorker
     public function buildApplication(LoggerInterface $Logger)
     {
         $Application = new Application($Logger);
-        $this->getFactory()->injectDependencies(Application::class, $Logger);
+        $this->getFactory()->injectDependencies(Application::class, $Application);
         return $Application;
     }
 
     /**
-     * @param RepositoryInterface $UserRepository
      * @param LoggerInterface $Logger
      *
      * @return UserManagerInterface
      */
-    public function buildUserManager(RepositoryInterface $UserRepository, LoggerInterface $Logger)
+    public function buildUserManager(LoggerInterface $Logger)
     {
-        $UserManager = new UserManager($UserRepository, $Logger);
-        $this->getFactory()->injectDependencies(UserManager::class, $Logger);
+        $UserManager = new UserManager($Logger);
+        $this->getFactory()->injectDependencies(UserManager::class, $UserManager);
         return $UserManager;
     }
 }
@@ -173,9 +180,18 @@ So you can pass the same instance to another class via constructor injection.
 
 
 ```php
+$Container->register('Logger', function () use ($FactoryWorker) {
+    return $FactoryWorker->buildLogger();
+});
+
+$Container->register('UserManager', function () use ($FactoryWorker, $Container) {
+    $Logger = $Container->resolve('Logger');
+    return $FactoryWorker->buildUserManager($Logger);
+});
+
 $Container->register('Application', function () use ($FactoryWorker, $Container) {
     $Logger = $Container->resolve('Logger');
-    return $FactoryWorker->buildApplication($Logger);
+    return $FactoryWorker->buildApplication($UserManager, $Logger);
 });
 ```
 
@@ -213,15 +229,19 @@ which required ```Logger``` dependency.
 ```php
 $Container = new Dependency\Container();
 $Factory = new Factory($Container);
-$FactoryWorker = $Factory->buildWorker(\MyApplication\Modules\Application\Factory\ApplicationFactory:class);
+$Factory->registerWorkerCallback('ApplicationFactoryWorker', function() use ($Factory) {
+    return $Factory->buildWorker(Application::class);
+});
+
+$FactoryWorker = $Factory->getWorkerByName('ApplicationFactoryWorker');
 
 $Container->register('Application', function () use ($FactoryWorker, $Container) {
+    $UserManager = $Container->resolve('UserManager');
     $Logger = $Container->resolve('Logger');
-    return $FactoryWorker->buildApplication($Logger);
+    return $FactoryWorker->buildApplication($UserManager, $Logger);
 });
 
 $Container->register('UserManager', function () use ($FactoryWorker) {
-    $UserRepository = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('UserRepository');
     $Logger = $FactoryWorker->getFactory()->getDependencyContainer()->resolve('Logger');
     return $FactoryWorker->buildUserManager($UserRepository, $Logger);
 });
