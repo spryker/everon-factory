@@ -16,8 +16,8 @@
   },  
   "require": {
     "php": ">=5.6",
-    "everon/collection": "~1.0",
-    "everon/utils": "~1.0"
+    "everon/collection": "^1.0.0",
+    "everon/utils": "^1.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "*",
