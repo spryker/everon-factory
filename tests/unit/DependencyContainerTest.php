@@ -86,37 +86,27 @@ class DependencyContainerTest extends MockeryTest
     {
         $FooStub = new FooStub();
         $Fuzz = new FuzzStub($FooStub);
+        $FooStubDupe = new FooStub();
+        $FuzzDupe = new FuzzStub($FooStubDupe);
 
         $this->Container->inject(get_class($Fuzz), $Fuzz);
+        $this->assertEquals($FooStub, $Fuzz->getFoo());
 
-        $FooImpostor = new FooStub();
-        $FuzzImpostor = new FuzzStub($FooImpostor);
-        $this->Container->inject(get_class($Fuzz), $FuzzImpostor);
-        $ActualFoo = $FuzzImpostor->getFoo();
-
-        $this->assertFalse($this->Container->isInjected(get_class($Fuzz)));
-        $this->assertFalse($this->Container->isInjected(get_class($FooImpostor)));
-
-        $this->assertNotEquals($FooStub, $ActualFoo);
+        $this->Container->inject(get_class($Fuzz), $FuzzDupe);
+        $this->assertNotEquals($FooStub, $FuzzDupe->getFoo());
     }
 
     public function test_setter_dependency_should_only_be_injected_once()
     {
         $FooStub = new FooStub();
+        $FooStubDupe = new FooStub();
         $Fuzz = new FuzzStub($FooStub);
 
         $this->Container->injectOnce(get_class($Fuzz), $Fuzz);
-        $this->assertFalse($this->Container->isInjected(get_class($Fuzz)));
-
-        $this->Container->injectOnce(get_class($Fuzz), $Fuzz);
-        $this->assertFalse($this->Container->isInjected(get_class($Fuzz)));
-
-        $this->assertFalse($this->Container->isInjected(get_class($FooStub)));
-        $this->Container->injectOnce(get_class($FooStub), $FooStub);
-        $this->assertTrue($this->Container->isInjected(get_class($FooStub)));
+        $this->assertEquals($FooStub, $Fuzz->getFoo()); 
 
         $this->Container->injectOnce(get_class($FooStub), $FooStub);
-        $this->assertTrue($this->Container->isInjected(get_class($FooStub)));
+        $this->Container->injectOnce(get_class($FooStub), $FooStubDupe);
 
         $this->assertEquals($FooStub, $Fuzz->getFoo());
     }

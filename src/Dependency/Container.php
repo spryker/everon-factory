@@ -53,32 +53,30 @@ class Container implements ContainerInterface
     protected $InjectedCollection;
 
     /**
-     * @param $setterName
-     * @param $Receiver
+     * @param string $dependencyName
+     * @param mixed $Receiver
      *
      * @throws UndefinedContainerDependencyException
      * @throws UndefinedDependencySetterException
      */
-    protected function injectSetterDependency($setterName, $Receiver)
+    protected function injectSetterDependency($dependencyName, $Receiver)
     {
         $receiverClassName = get_class($Receiver);
-        $method = 'set' . $setterName; //eg. setConfigManager
+        $method = 'set' . $dependencyName; //eg. setConfigManager
         if (method_exists($Receiver, $method) === false) {
             throw new UndefinedDependencySetterException([
                 $method,
-                $setterName,
+                $dependencyName,
                 $receiverClassName,
             ]);
         }
 
-        $Dependency = $this->resolve($setterName);
+        $Dependency = $this->resolve($dependencyName);
         $Receiver->$method($Dependency);
-
-        $this->getInjectedCollection()->set($receiverClassName, true);
     }
 
     /**
-     * @param $className
+     * @param string $className
      * @param bool $autoload
      *
      * @return array
@@ -110,7 +108,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param $dependencyName
+     * @param string $dependencyName
      *
      * @return bool
      */
@@ -123,7 +121,7 @@ class Container implements ContainerInterface
     }
 
     /**
-     * @param $dependencyName
+     * @param string $dependencyName
      *
      * @return bool
      */
@@ -148,9 +146,11 @@ class Container implements ContainerInterface
                 continue;
             }
 
-            $requiredDependency = $this->textLastTokenToName($dependencyName);
-            $this->injectSetterDependency($requiredDependency, $ReceiverInstance);
+            $name = $this->textLastTokenToName($dependencyName);
+            $this->injectSetterDependency($name, $ReceiverInstance);
         }
+
+        $this->getInjectedCollection()->set($receiverClassName, true);
     }
 
     /**

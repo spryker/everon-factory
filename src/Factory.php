@@ -12,6 +12,7 @@ namespace Everon\Component\Factory;
 use Everon\Component\Factory\Dependency\ContainerInterface;
 use Everon\Component\Factory\Dependency\FactoryAwareInterface;
 use Everon\Component\Factory\Exception\MissingFactoryAwareInterfaceException;
+use Everon\Component\Factory\Exception\FailedToInjectDependenciesException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 use Everon\Component\Factory\Exception\UndefinedFactoryWorkerException;
 
@@ -36,8 +37,12 @@ class Factory implements FactoryInterface
      */
     public function injectDependencies($className, $Instance)
     {
-        $this->getDependencyContainer()->inject($className, $Instance);
-        $this->injectFactoryWhenRequired($className, $Instance);
+        try {
+            $this->getDependencyContainer()->inject($className, $Instance);
+            $this->injectFactoryWhenRequired($className, $Instance);
+        } catch (\Exception $e) {
+            throw new FailedToInjectDependenciesException($className, null, $e);
+        }
     }
 
     /**
@@ -45,12 +50,16 @@ class Factory implements FactoryInterface
      */
     public function injectDependenciesOnce($className, $Instance)
     {
-        $this->getDependencyContainer()->injectOnce($className, $Instance);
-        $this->injectFactoryWhenRequired($className, $Instance);
+        try {
+            $this->getDependencyContainer()->injectOnce($className, $Instance);
+            $this->injectFactoryWhenRequired($className, $Instance);
+        } catch (\Exception $e) {
+            throw new FailedToInjectDependenciesException($className, null, $e);
+        }
     }
 
     /**
-     * @param $className
+     * @param string $className
      * @param object $Instance
      *
      * @throws MissingFactoryAwareInterfaceException
