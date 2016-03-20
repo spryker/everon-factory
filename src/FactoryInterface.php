@@ -10,6 +10,7 @@
 namespace Everon\Component\Factory;
 
 use Everon\Component\CriteriaBuilder\Criteria\ContainerInterface;
+use Everon\Component\Factory\Exception\FailedToInjectDependenciesException;
 use Everon\Component\Factory\Exception\UndefinedClassException;
 use Everon\Component\Factory\Exception\UndefinedFactoryWorkerException;
 
@@ -22,16 +23,27 @@ interface FactoryInterface
     public function getDependencyContainer();
 
     /**
-     * @param $className
-     * @param $Instance
+     * @param string $className
+     * @param mixed $Instance
+     *
+     * @throws FailedToInjectDependenciesException
      *
      * @return void
      */
     public function injectDependencies($className, $Instance);
 
     /**
-     * @param $namespace
-     * @param $className
+     * @param string $className
+     * @param mixed $Instance
+     *
+     * @throws FailedToInjectDependenciesException
+     * @return void
+     */
+    public function injectDependenciesOnce($className, $Instance);
+
+    /**
+     * @param string $namespace
+     * @param string $className
      *
      * @return string
      */

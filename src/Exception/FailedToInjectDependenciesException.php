@@ -11,9 +11,9 @@ namespace Everon\Component\Factory\Exception;
 
 use Everon\Component\Utils\Exception\AbstractException;
 
-class UnableToInstantiateException extends AbstractException
+class FailedToInjectDependenciesException extends AbstractException
 {
 
-    protected $message = 'Class "%s" is not instantiable';
+    protected $message = 'Failed to load dependencies in  "%s" class';
 
 }

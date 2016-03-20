@@ -33,14 +33,14 @@ interface ContainerInterface
     public function injectOnce($receiverClassName, $ReceiverInstance);
 
     /**
-     * @param $className
+     * @param string $className
      *
      * @return bool
      */
     public function isFactoryRequired($className);
 
     /**
-     * @param $name
+     * @param string $name
      * @param \Closure $ServiceClosure
      *
      * @throws DependencyServiceAlreadyRegisteredException
@@ -50,7 +50,7 @@ interface ContainerInterface
     public function register($name, \Closure $ServiceClosure);
 
     /**
-     * @param $name
+     * @param string $name
      * @param \Closure $ServiceClosure
      *
      * @return void
@@ -58,7 +58,7 @@ interface ContainerInterface
     public function propose($name, \Closure $ServiceClosure);
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @throws UndefinedContainerDependencyException
      *
@@ -67,14 +67,14 @@ interface ContainerInterface
     public function resolve($name);
 
     /**
-     * @param $className
+     * @param string $className
      *
      * @return bool
      */
     public function isInjected($className);
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return bool
      */
