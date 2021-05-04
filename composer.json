@@ -1,26 +1,28 @@
 {
-  "name": "everon/factory",
-  "description": "Everon Factory Component",
-  "type": "library",
-  "license": "MIT",
-  "authors": [{
-    "name": "Oliwier Ptak",
-    "email": "everonphp@gmail.com"
-  }], 
-  "minimum-stability": "dev",
-  "autoload": {
-    "psr-4": {
-      "Everon\\Component\\Factory\\": "src/",
-      "Everon\\Component\\Factory\\Tests\\Unit\\": "tests/unit/"
-    }   
-  },  
-  "require": {
-    "php": ">=5.6",
-    "everon/collection": "^1.0.0",
-    "everon/utils": "^1.0.0"
-  },
-  "require-dev": {
-    "phpunit/phpunit": "*",
-    "mockery/mockery": "dev-master"
-  }
+    "name": "everon/factory",
+    "description": "Everon Factory Component",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oliwier Ptak",
+            "email": "everonphp@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Everon\\Component\\Factory\\": "src/",
+            "Everon\\Component\\Factory\\Tests\\Unit\\": "tests/unit/"
+        }
+    },
+    "require": {
+        "php": ">=5.6",
+        "everon/collection": "^1.0.0",
+        "everon/utils": "^1.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "mockery/mockery": "dev-master"
+    }
 }
